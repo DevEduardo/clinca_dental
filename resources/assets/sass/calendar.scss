@@ -1,0 +1,64 @@
+.appointment-calendar {
+  margin-top: 30px;
+
+  &__day {
+    display: inline-block;
+    width: 14.285714286%;
+    float: left;
+    padding: 0 5px;
+    border-left: solid 1px #eeeeee;
+
+    &:first-of-type {
+      border: none;
+    }
+
+    h3 {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    hr {
+      margin-bottom: 8px;
+      margin-top: 10px;
+    }
+  }
+
+  &__day-item {
+    padding: 7px 4px;
+    margin: 0;
+    border-bottom: solid 1px #c4c4c4;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:nth-child(4) {
+      border-top: solid 1px #c4c4c4;
+    }
+  }
+
+  &__legend {
+    border-top: 1px #eeeeee solid;
+    margin-top: 20px;
+
+    p {
+      padding: 10px 20px;
+      position: relative;
+
+      span {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        border: solid 1px #aaaaaa;
+      }
+    }
+  }
+}
