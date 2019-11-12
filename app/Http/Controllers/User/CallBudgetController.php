@@ -153,7 +153,7 @@ class CallBudgetController extends Controller
         $callBudget->notes = $request->notes;
         $callBudget->sell_manager_id = $request->sell_manager_id > 0 ? $request->sell_manager_id : null;
         $callBudget->save();
-        
+
         if ($request->status !== $callBudget->status) {
 
             $callBudget->status = $request->status;
@@ -211,26 +211,23 @@ class CallBudgetController extends Controller
 
         $callBudgets = CallBudget::query()
             ->whereBetween('last_call', [$start, $end])
-            ->with(['callBudgetSource', 'sellManager'])
-        ;
+            ->with(['callBudgetSource', 'sellManager']);
 
-        if (! Auth::user()->isAdmin()) {
+        if (!Auth::user()->isAdmin()) {
             $callBudgets->where(function ($query) {
                 $query
                     ->where('sell_manager_id', Auth::user()->id)
-                    ->orWhereNull('sell_manager_id')
-                ;
+                    ->orWhereNull('sell_manager_id');
             });
         }
 
-        if (! empty($filter = $request->filter)) {
+        if (!empty($filter = $request->filter)) {
             // Filtro por telefono || nombre || email
             $callBudgets->where(function ($query) use ($filter) {
                 $query
                     ->where('name', $filter)
                     ->orWhere('phone', $filter)
-                    ->orWhere('email', $filter)
-                ;
+                    ->orWhere('email', $filter);
             });
         }
 
@@ -243,15 +240,14 @@ class CallBudgetController extends Controller
 
                 $patient = Patient::query()->where('phone', $callBudget->phone)->first();
 
-                if (! $patient) {
+                if (!$patient) {
                     return false;
                 }
 
                 $patientHistories = PatientHistory::query()
                     ->whereBetween('created_at', [$start, $end])
                     ->where('patient_id', $patient->id)
-                    ->count()
-                ;
+                    ->count();
 
                 if ($patientHistories === 0) {
                     return false;
@@ -266,4 +262,5 @@ class CallBudgetController extends Controller
             'callBudgets' => $callBudgets
         ]);
     }
+
 }
