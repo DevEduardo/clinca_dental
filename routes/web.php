@@ -108,6 +108,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     // Presupuestos telefonicos
     Route::get('callBudget/search', 'User\CallBudgetController@search');
     Route::get('callBudget/table', 'User\CallBudgetController@indexTable')->name('callBudget.indexTable');
+    Route::get('callBudget/general', 'User\CallBudgetController@indexTable')->name('callBudget.indexGeneral');
     Route::resource('callBudget', 'User\CallBudgetController');
 
     // Seguimientos
