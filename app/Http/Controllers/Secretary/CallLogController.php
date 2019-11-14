@@ -62,7 +62,7 @@ class CallLogController extends Controller
         ;
 
         if (! Auth::user()->isAdmin()) {
-            $callLogs->where('user_id', Auth::user()->id);
+            $callLogs->where('user_id', Auth::user()->id)->orWhere('secretary_id', Auth::user()->id);
         }
 
         $callLogs = $callLogs->paginate();

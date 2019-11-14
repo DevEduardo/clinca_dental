@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\CallBudget;
 use App\CallBudgetSource;
 use App\CallBudgetHistory;
+use App\CallStatusHistory;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use DB;
@@ -51,7 +52,9 @@ class CallBudgetController extends Controller
             $sellManagers = User::query()->where('id', Auth::user()->id)->get();
         }
 
-        return view('user.callBudget.create', compact('callBudgetSources', 'sellManagers'));
+        $users = User::query()->hasRole('secretary')->orderBy('name')->get();
+
+        return view('user.callBudget.create', compact('callBudgetSources', 'sellManagers', 'users'));
     }
 
     /**
@@ -63,36 +66,38 @@ class CallBudgetController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-
-        $callBudget = new CallBudget($request->except(['sell_manager_id']));
+        
+        $callBudget = new CallBudget($request->except(['sell_manager_id', 'secretary_id']));
         $callBudget->sell_manager_id = $request->sell_manager_id > 0 ? $request->sell_manager_id : null;
 
         if ($request->has('contact_repeat')) {
-            // Calculo la siguiente fecha de contacto
             $days = $request->get('contact_repeat');
             $contactRepeat = new \DateTime($request->get('last_call'));
-
             $callBudget->next_call = $contactRepeat->modify("+{$days} days");
         }
 
         $callBudget->save();
-
         $history = new CallBudgetHistory();
         $history->call_budget_id = $callBudget->id;
         $history->status = $callBudget->status;
         $history->save();
 
         if (Auth::user()->isAdmin() && $request->sell_manager_id > 0) {
-            // Es admin && Asigno un agente de ventas
-
             $callLog = new CallLog();
             $callLog->public_id = 'CALL' . time();
             $callLog->description = $callBudget->notes;
             $callLog->call_date = new \DateTime();
             $callLog->status = CallLog::STATUS_PENDING;
             $callLog->user_id = $request->sell_manager_id;
+            $callLog->secretary_id = $request->secretary_id;
             $callLog->call_budget_id = $callBudget->id;
             $callLog->save();
+
+            $callStatusHistory = new CallStatusHistory();
+            $callStatusHistory->call_log_id = $callLog->id;
+            $callStatusHistory->status = CallLog::STATUS_PENDING;
+            $callStatusHistory->note = $callLog->description;
+            $callStatusHistory->save();
         }
 
         DB::commit();
@@ -261,6 +266,20 @@ class CallBudgetController extends Controller
             'success' => true,
             'callBudgets' => $callBudgets
         ]);
+    }
+
+    public function indexGeneral()
+    {
+        return view('user.callBudget.indexGeneral');
+    }
+
+    public function searchGeneral()
+    {   /*
+        $start = (new \DateTime($request->start))->setTime(0, 0, 0);
+        $end = (new \DateTime($request->end))->setTime(23, 59, 59);
+        */
+        return$callBudgets = CallBudget::where('id', 213)
+            ->with(['callBudgetSource', 'sellManager', 'callLog'])->first();
     }
 
 }

@@ -77,6 +77,7 @@ Vue.component('list-supply', require('./components/ListSupply.vue'));
 Vue.component('register-call-budget-source', require('./components/RegisterCallBudgetSource.vue'));
 Vue.component('sent-budget', require('./components/SentBudget.vue'));
 Vue.component('sent-budget-table', require('./components/SentBudgetTable.vue'));
+Vue.component('sent-budget-general', require('./components/SentBudgetGeneral.vue'));
 Vue.component('register-call-budget', require('./components/RegisterCallBudget.vue'));
 Vue.component('edit-call-budget', require('./components/EditCallBudget.vue'));
 Vue.component('report-call-log', require('./components/ReportCallLog.vue'));

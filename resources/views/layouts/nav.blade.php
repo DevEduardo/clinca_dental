@@ -609,6 +609,14 @@
                                 @endif
                                 @if(Auth::user()->hasPermission('callBudget.index'))
                                     <li>
+                                        <a href="{{ route('callBudget.indexGeneral') }}">
+                                            <i class="glyphicon glyphicon-send"></i>
+                                            Presupuestos enviados
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->hasPermission('callBudget.index'))
+                                    <li>
                                         <a href="{{ route('callBudget.index') }}">
                                             <i class="glyphicon glyphicon-send"></i>
                                             Presupuestos enviados ( Interesado )
