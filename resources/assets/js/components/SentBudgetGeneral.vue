@@ -50,10 +50,7 @@
                                     class="form-control"
                                     name="status"
                                     id="status"
-                                    v-validate
-                                    data-vv-rules="required"
-                                    :class="{'input-error': errors.has('status')}"
-                                    v-model="status"
+                                    v-model="form.status"
                                 >
                                     <option :value="1">Hizo cita</option>
                                     <option :value="2">Interesado</option>
@@ -156,8 +153,60 @@
                                                 </div>
 
                                                 <div class="row info-call">
-                                                    <div class="col-sm-12">
-                                                        <strong>Notas:</strong> {{ callBudget.notes }}
+                                                    <div class="col-sm-12" v-if="callBudget.call_log">
+                                                        <strong 
+                                                        >
+                                                        Notas: ({{ callBudget.notes }})
+                                                        </strong>
+                                                        <div >
+                                                            <div v-for="(note, i) in callStatusHistory" :key="i" >
+                                                                <div 
+                                                                    v-if="note.call_budget_id  === callBudget.id"
+                                                                    
+                                                                >
+                                                                    <div 
+                                                                        v-for="(statusHistory, i) in 
+                                                                        note.status_history" :key="i"
+                                                                        class="alert alert-info"
+                                                                    >
+                                                                        <p>
+                                                                            <strong>
+                                                                                <i 
+                                                                                    v-if="statusHistory.status === 1"
+                                                                                >
+                                                                                Pendiente</i>
+                                                                                <i 
+                                                                                    v-if="statusHistory.status === 2"
+                                                                                >
+                                                                                Con cita</i>
+                                                                                <i 
+                                                                                    v-if="statusHistory.status === 3"
+                                                                                >
+                                                                                No interesado</i>
+                                                                                <i 
+                                                                                    v-if="statusHistory.status === 4"
+                                                                                >
+                                                                                No constesto</i>
+                                                                                <i 
+                                                                                    v-if="statusHistory.status === 5"
+                                                                                >
+                                                                                Volver a llamar</i>
+                                                                                <small>
+                                                                                    ({{ statusHistory.created_at }})
+                                                                                </small>
+                                                                            </strong><br>
+                                                                            {{ statusHistory.note }}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12" v-if="! callBudget.call_log">
+                                                        <strong 
+                                                        >
+                                                        Nota: {{ callBudget.notes }}
+                                                        </strong>
                                                     </div>
                                                 </div>
                                             </section>
@@ -312,17 +361,16 @@
                initStart: new Date(),
                initEnd: new Date(),
                callBudgetData: [],
+               callStatusHistory: [],
                callBudgetSelected: null,
+               showDetails: null,
                form: {
                    start: null,
                    end: null,
                    status: null,
-                   filter: '',
-                   with_service: false
                }
            }
        },
-
         mounted () {
             this.form.start = this.changeDate(new Date())
             this.form.end = this.changeDate(new Date())
@@ -350,34 +398,44 @@
 
            
 
-           search () {
-               this.searchLoading = true
+            search () {
+                this.searchLoading = true
 
-               axios.get(
-                   '/user/callBudget/search' +
-                   '?start=' + this.form.start +
-                   '&end=' + this.form.end +
-                   '&filter=' + this.form.filter +
-                   '&with_service=' + this.form.with_service
-               )
-                   .then(res => {
+                axios.get(
+                    '/user/callBudget/searchGeneral' +
+                    '?start=' + this.form.start +
+                    '&end=' + this.form.end +
+                    '&status=' + this.form.status 
+                )
+                    .then(res => {
 
-                       if (res.data.success) {
-                           this.callBudgetData = res.data.callBudgets
-                       } else {
-                           this.callBudgetData = []
-                       }
+                        if (res.data.success) {
+                            this.callBudgetData = res.data.callBudgets
+                            this.callStatusHistory = res.data.callStatusHistory
+                        } else {
+                            this.callBudgetData = []
+                            this.callStatusHistory = []
+                        }
 
-                       this.searchLoading = false
-                   })
-                   .catch(err => {
-                       if (err.response.status === 403 || err.response.status === 405) {
-                           location.href = '/';
-                       }
-                       this.callBudgetData = []
-                       this.searchLoading = false;
-                   })
-           }
+                        this.searchLoading = false
+                    })
+                    .catch(err => {
+                        if (err.response.status === 403 || err.response.status === 405) {
+                            location.href = '/';
+                        }
+                        this.callBudgetData = []
+                        this.searchLoading = false;
+                    })
+            },
+
+            showDetail (id) {
+                this.showDetails = true
+            },
+
+            hideDetail (id) {
+                this.showDetails = false
+            }
+
        }
     }
 </script>

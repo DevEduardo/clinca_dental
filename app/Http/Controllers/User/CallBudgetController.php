@@ -273,13 +273,26 @@ class CallBudgetController extends Controller
         return view('user.callBudget.indexGeneral');
     }
 
-    public function searchGeneral()
-    {   /*
+    public function searchGeneral(Request $request)
+    {   
         $start = (new \DateTime($request->start))->setTime(0, 0, 0);
         $end = (new \DateTime($request->end))->setTime(23, 59, 59);
-        */
-        return$callBudgets = CallBudget::where('id', 213)
-            ->with(['callBudgetSource', 'sellManager', 'callLog'])->first();
+        
+        $callBudgets = CallBudget::query()
+            ->whereBetween('last_call', [$start, $end])
+            ->with(['callBudgetSource', 'sellManager', 'callLog']);
+
+        if (!empty($request->status)) {
+            $callBudgets->where('status', $request->status);
+        }
+        
+        $callBudgets = $callBudgets->orderBy('status')->get();
+
+        return new JsonResponse([
+            'success' => true,
+            'callBudgets' => $callBudgets,
+            'callStatusHistory' => CallLog::with(['statusHistory'])->get()
+        ]);
     }
 
 }
