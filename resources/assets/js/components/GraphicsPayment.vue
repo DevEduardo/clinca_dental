@@ -171,7 +171,7 @@
                     this.data.total = res.data.totalPayments.total;
                     res.data.totalAmounForType.forEach((data) => {
                         this.datacollection.push({
-                            type: data.type,
+                            type: this.formatBarTitle(data),
                             amount: data.amount
                         });
                     })
@@ -190,6 +190,29 @@
 
                 return format[1] + '/' + format[2] + '/' + format[0];
             },
+            formatBarTitle: function (data) {
+                let percentage = 0
+                switch (data.type) {
+                    case 1:
+                        percentage = ( ( data.amount / this.data.total ) * 100 )
+                        return `Tarjeta de credito (${data.amount}$) ${parseFloat(percentage).toFixed(2)}%`
+                        break;
+                    case 2:
+                        percentage = ( ( data.amount / this.data.total ) * 100 )
+                        return `Efectivo (${data.amount}$) ${parseFloat(percentage).toFixed(2)}%`
+                        break;
+                    case 3:
+                        percentage = ( ( data.amount / this.data.total ) * 100 )
+                        return `Cheque (${data.amount}$) ${parseFloat(percentage).toFixed(2)}%`
+                        break;
+                    case 4:
+                        percentage = ( ( data.amount / this.data.total ) * 100 ) 
+                        return `Descuento (${data.amount}$) ${parseFloat(percentage).toFixed(2)}%`
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 </script>

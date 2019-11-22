@@ -40,7 +40,7 @@ class GraphicsController extends Controller
     }
 
     public function getDataPaymentCharts($dateSatrt = NULL, $dateEnd = NULL, $type = NULL)
-    {
+    {   
         return new JsonResponse([
             'success' => 200,
             'totalAmounForType' => Payment::getTotalAmountForType($this->getDateRange($dateSatrt, $dateEnd), $type),
