@@ -543,7 +543,7 @@
                                     <li>
                                         <a href="{{ route('graficaComicion') }}">
                                             <i class="glyphicon glyphicon-stats"></i>
-                                            Comisión a doctores / Servicios
+                                            Pago vs Gastos
                                         </a>
                                     </li>
                                 @endif

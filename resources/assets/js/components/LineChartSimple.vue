@@ -12,7 +12,7 @@ export default {
     renderLineChart: function() {
       this.renderChart(
         {
-          labels: ["Total de pagos", "Total de gastos", "Total de comisiones"],
+          labels: [`Total de pagos ${this.data[0].totalPayments}$`, this.data[0].titleExpenses],
           datasets: [
             {
               fillColor: "rgba(172,194,132,0.4)",
@@ -26,8 +26,7 @@ export default {
               ],
               data: [
                 this.data[0].totalPayments,
-                this.data[0].totalExpenses,
-                this.data[0].totalCommission
+                this.data[0].totalExpenses
               ]
             }
           ]
@@ -35,7 +34,22 @@ export default {
         {
           responsive: true,
           maintainAspectRatio: false,
-          legend: { display: false }
+          legend: { display: false },
+          title: {
+            display: true,
+            text: `Pago vs Gastos`
+          },
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  callback: (value, index, values) => {
+                    return value + "$";
+                  }
+                }
+              }
+            ]
+          }
         }
       );
     }

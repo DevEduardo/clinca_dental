@@ -112,26 +112,19 @@ class Payment extends Model
             ->get();
     }
 
-    public function scopeGetTotalAmounOfCommmission($query, $dateRange)
-    {   /*
-        if ($dateRange) {
-            $query->whereBetween('payments.created_at', $dateRange);
-        }
-        return $query->selectRaw('*')
-            ->leftJoin('patient_history','patient_history.id','payments.patient_history_id')
-            ->leftJoin('users','users.public_id','patient_history.doctor_id')
-            ->with('commissionProducts')
-            ->groupBy('patient_history.doctor_id')
-            ->orderBy('patient_history.doctor_id')
-            ->get();
-            */
+    public function scopeGetTotalAmounPayment($query, $start, $end)
+    {   
+        return $query->selectRaw('sum(amount) as amount')
+            ->where([
+                    ['date', '>=', $start],
+                    ['date', '<=', $end]
+                ])
+            ->first()->amount;
     }
 
     public function scopeGetTotalPayments($query, $dateRange, $type)
     {
-        if ($type != 0) {
-            $query->where('type', $type);
-        }
+        
         if ($dateRange) {
             $query->whereBetween('created_at', $dateRange);
         }

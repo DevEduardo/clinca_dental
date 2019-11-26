@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-4">
+            <div class="col-xs-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <section>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-8">
+            <div class="col-xs-9">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <section>

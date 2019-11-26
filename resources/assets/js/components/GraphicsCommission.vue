@@ -5,7 +5,7 @@
                 <h1>
                     <i class="glyphicon glyphicon-stats" v-if="! loading"></i>
                     <img src="/img/loading.gif" v-if="loading">
-                    Reporte de Comision a doctores / servicios
+                    Pago vs Gastos
                 </h1>
             </div>
         </div>
@@ -144,7 +144,7 @@
                     this.datacollection.push({
                         totalPayments: res.data.totalPayments,
                         totalExpenses: res.data.totalExpenses,
-                        totalCommission: res.data.totalCommission
+                        titleExpenses: this.formatTitleExpenses(res.data)
                     });
                 })
                 .catch((err) => {
@@ -161,6 +161,12 @@
 
                 return format[1] + '/' + format[2] + '/' + format[0];
             },
+            formatTitleExpenses: function (data) {
+                let percentage = 0
+                percentage = ( ( data.totalExpenses / data.totalPayments ) * 100 )
+                let totalExpenses = `Tarjeta de credito (${data.totalExpenses}$) ${parseFloat(percentage).toFixed(2)}%`
+                return totalExpenses
+            }
         }
     }
 </script>
