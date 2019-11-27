@@ -54,11 +54,27 @@ class GraphicsController extends Controller
         $start->setTime(00, 00, 00);
         $end = new \DateTime($dateEnd);
         $end->setTime(23, 59, 59);
-        
         return new JsonResponse([
             'success' => 200,
             'totalPayments' => Payment::getTotalAmounPayment($start, $end),
             'totalExpenses' => Expense::getTotalAmounExpense($start, $end)
+        ]);
+    }
+
+    public function getDataExpenseForType($dateSatrt = NULL, $dateEnd = NULL) {
+        $start = new \DateTime($dateSatrt);
+        $start->setTime(00, 00, 00);
+        $end = new \DateTime($dateEnd);
+        $end->setTime(23, 59, 59);
+        $expensesType = [];
+        foreach (Expense::expenseForType($start, $end) as $value) {
+            array_push($expensesType, $value->supplier->name);
+        }
+        return new JsonResponse([
+            'success' => 200,
+            'totalPayments' => Payment::getTotalAmounPayment($start, $end),
+            'totalExpenses' => Expense::expenseForType($start, $end),
+            'typeExpenses' => $expensesType
         ]);
     }
 

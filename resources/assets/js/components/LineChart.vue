@@ -28,7 +28,14 @@ export default {
                 "#006266",
                 "#1B1464",
                 "#5758BB",
-                "#6F1E51"
+                "#6F1E51",
+                '#0080FF',
+                '#6495ED',
+                '#008B8B',
+                '#FF8C00',
+                '#9932CC',
+                '#1E90FF'
+
               ],
               data: amount
             }
@@ -47,7 +54,7 @@ export default {
               {
                 ticks: {
                   callback: (value, index, values) => {
-                    return value + "$";
+                    return value + " $";
                   }
                 }
               }

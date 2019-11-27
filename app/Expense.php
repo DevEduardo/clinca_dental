@@ -62,4 +62,18 @@ class Expense extends Model
                 ])
             ->first()->amount;
     }
+
+    public function scopeExpenseForType($query, $start, $end)
+    {   
+        return $query->selectRaw('supplier_id, sum(amount) as amount')
+            ->with('supplier')
+            ->where([
+                    ['date', '>=', $start],
+                    ['date', '<=', $end]
+                ])
+            ->groupBy('supplier_id')
+            ->orderBy('amount', 'desc')
+            ->get();
+    }
+
 }

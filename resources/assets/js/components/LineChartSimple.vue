@@ -17,7 +17,7 @@ export default {
             {
               fillColor: "rgba(172,194,132,0.4)",
               backgroundColor: [
-                "#f87979",
+                "#32CD32",
                 "#EA2027",
                 "#006266",
                 "#1B1464",

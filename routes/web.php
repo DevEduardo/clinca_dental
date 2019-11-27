@@ -177,6 +177,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     );
 
     Route::get(
+        'data/grafica/expenseForType/{dateStar?}/{dateEnd?}/{type?}',
+        'Admin\GraphicsController@getDataExpenseForType'
+    );
+
+    Route::get(
         'datos/grafica/pagos/{dateStar?}/{dateEnd?}/{type?}',
         'Admin\GraphicsController@getDataPaymentCharts'
     );
