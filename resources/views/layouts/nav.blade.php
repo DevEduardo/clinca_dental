@@ -585,6 +585,14 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->hasPermission('tracking.index'))
+                                    <li>
+                                        <a href="{{ route('tracking.resolved') }}">
+                                            <i class="glyphicon glyphicon-list-alt"></i>
+                                            Lista de seguimientos resueltos
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

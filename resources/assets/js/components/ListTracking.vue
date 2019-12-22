@@ -4,7 +4,7 @@
             <div class="col-xs-12">
                 <h1>
                     <i class="glyphicon glyphicon-list-alt"></i>
-                    Lista de seguimientos
+                    Lista de seguimientos {{ title ? 'resueltos' : '' }}
                 </h1>
             </div>
         </div>
@@ -188,6 +188,10 @@
 
             user: {
                 type: Object,
+                required: true
+            },
+
+            title: {
                 required: true
             }
         },

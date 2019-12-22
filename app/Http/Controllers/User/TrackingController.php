@@ -40,10 +40,35 @@ class TrackingController extends Controller
             $trackingList->where('secretary_id', Auth::user()->id);
         }
 
+        $title = false;
         $trackingList = $trackingList->get();
         $secretaries = User::query()->hasRole(['secretary', 'admin'], 'or')->get();
 
-        return view('user.tracking.index', compact('trackingList', 'secretaries'));
+        return view('user.tracking.index', compact('trackingList', 'secretaries', 'title'));
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resolved()
+    {
+        $trackingList = Tracking::query()
+        ->with([
+            'secretary'
+        ])
+        ->where('status', Tracking::STATUS_RESOLVED);
+
+        if (!Auth::user()->isAdmin()) {
+            $trackingList->where('secretary_id', Auth::user()->id);
+        }
+
+        $title = true;
+        $trackingList = $trackingList->get();
+        $secretaries = User::query()->hasRole(['secretary', 'admin'], 'or')->get();
+
+        return view('user.tracking.resolved', compact('trackingList', 'secretaries', 'title'));
     }
 
     /**
