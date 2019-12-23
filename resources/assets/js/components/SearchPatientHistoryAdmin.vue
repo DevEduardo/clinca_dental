@@ -170,7 +170,7 @@
                                                             :id="'product' + id"
                                                             class="form-control"
                                                             v-model="service.product_id"
-                                                            v-if="serviceEdit === service.id"
+                                                            v-if="serviceEdit === service.id && user.hasRole.admin"
                                                         >
                                                         <option
                                                                 v-for="product in products"
@@ -180,7 +180,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id">
+                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
                                                         {{ service.product.name }}
                                                     </span>
                                                 </td>
@@ -192,10 +192,10 @@
                                                             class="form-control"
                                                             placeholder="Diente"
                                                             v-model="service.tooth"
-                                                            v-if="serviceEdit === service.id"
+                                                            v-if="serviceEdit === service.id && user.hasRole.admin"
                                                         >
 
-                                                    <span v-if="serviceEdit !== service.id">
+                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
                                                         {{ service.tooth }}
                                                     </span>
                                                 </td>
@@ -205,7 +205,7 @@
                                                             :id="'doctor' + id"
                                                             class="form-control"
                                                             v-model="service.doctor_id"
-                                                            v-if="serviceEdit === service.id"
+                                                            v-if="serviceEdit === service.id && user.hasRole.admin"
                                                         >
                                                         <option
                                                                 v-for="doctor in doctors"
@@ -215,7 +215,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id">
+                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
                                                         {{ service.doctor.name }}
                                                     </span>
                                                 </td>
@@ -225,7 +225,7 @@
                                                             :id="'assistant' + id"
                                                             class="form-control"
                                                             v-model="service.assistant_id"
-                                                            v-if="serviceEdit === service.id"
+                                                            v-if="serviceEdit === service.id && user.hasRole.admin"
                                                             >
                                                         <option
                                                                 v-for="assistant in assistants"
@@ -235,7 +235,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id">
+                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
                                                         {{ service.assistant.name }}
                                                     </span>
                                                 </td>
@@ -273,7 +273,7 @@
                                                             data-toggle="modal"
                                                             data-target="#deleteModal"
                                                             @click="deletePatientHistory = service.id"
-                                                            v-if="serviceEdit !== service.id"
+                                                            v-if="serviceEdit !== service.id && user.hasRole.admin"
                                                             >
                                                         <i class="glyphicon glyphicon-remove"></i>
                                                     </button>
@@ -735,7 +735,7 @@
                     })
                     .catch((err) => {
                         if (err.response.status === 403 || err.response.status === 405) {
-                            location.href = '/';
+                            console.log(err);
                         }
                         this.loading = false;
                         console.log(err);
@@ -755,7 +755,7 @@
                 })
                 .catch((err) => {
                     if (err.response.status === 403 || err.response.status === 405) {
-                        location.href = '/';
+                        console.log(err);
                     }
                     this.loading = false;
                     console.log(err);
@@ -764,8 +764,11 @@
 
             updatePatientHistory: function (service) {
                 this.serviceLoading = service.id;
-
-                axios.put('/user/service/' + service.public_id + '/updateService', service)
+                let url = '/user/service/' + service.public_id + '/updateService'
+                if (this.user.hasRole.secretary) {
+                    url = '/user/service/' + service.public_id + '/updateServiceSecretary'
+                }
+                axios.put(url, service)
                     .then((res) => {
 
                         this.updateRelation(service);
@@ -775,7 +778,7 @@
                     })
                     .catch((err) => {
                         if (err.response.status === 403 || err.response.status === 405) {
-                            location.href = '/';
+                            console.log(err);
                         }
                         console.log(err);
                     })

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @if(Auth::user()->isAdmin())
+    @if(Auth::user()->isAdmin() || Auth::user()->isSecretary())
         <search-patient-history-admin
             :user = "{{ json_encode(Auth::user()) }}"
             :products = "{{ \App\Product::orderBy('name')->get() }}"

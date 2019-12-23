@@ -29,6 +29,7 @@ class PatientHistoryController extends Controller
      */
     public function __construct()
     {
+
         $this->middleware('doctor')->except([
             'searchService',
             'search'
@@ -40,6 +41,7 @@ class PatientHistoryController extends Controller
             'deleteImage',
             'updatePatientHistory'
         ]);
+
     }
 
     /**

@@ -27,10 +27,13 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::delete('service/note/{note}', 'User\PatientHistoryController@deleteNote');
     Route::delete('service/image/{note}', 'User\PatientHistoryController@deleteImage');
     Route::put('service/{service}/updateService', 'User\PatientHistoryController@updatePatientHistory');
+    
     Route::post('service/register/patientHistory', 'User\PatientHistoryController@registerPatientHistory');
     Route::get('service/{service}/uploadImage', 'User\PatientHistoryController@uploadImage')->name('service.upload');
     Route::post('service/{service}/uploadImage', 'User\PatientHistoryController@storeImage');
     Route::resource('service', 'User\PatientHistoryController');
+
+    Route::put('service/{service}/updateServiceSecretary', 'Secretary\PatientHistorySecreatryController@updatePatientHistorySecretary');
 
     // Cotizacion
     Route::resource('budget', 'User\BudgetController');
