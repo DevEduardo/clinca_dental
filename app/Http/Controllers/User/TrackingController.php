@@ -71,6 +71,49 @@ class TrackingController extends Controller
         return view('user.tracking.resolved', compact('trackingList', 'secretaries', 'title'));
     }
 
+    public function search($dateStart, $dateEnd)
+    {   
+        $trackingList = Tracking::query()
+        ->with([
+            'secretary'
+        ])
+        ->where('status', Tracking::STATUS_RESOLVED)
+        ->whereBetween('created_at', $this->getDateRange($dateStart, $dateEnd));
+
+        if (!Auth::user()->isAdmin()) {
+            $trackingList->where('secretary_id', Auth::user()->id);
+        }
+
+        $trackingList = $trackingList->get();
+        $secretaries = User::query()->hasRole(['secretary', 'admin'], 'or')->get();
+
+        return new JsonResponse([
+            'success' => 200,
+            'trackingList' => $trackingList,
+            'secretaries' => $secretaries
+        ]);
+    }
+
+    private function getDateRange($dateSatrt, $dateEnd)
+    {
+        $start = new \DateTime();
+        $start->setTime(00, 00, 00);
+        $end = new \DateTime();
+        $end->setTime(23, 59, 59);
+
+        if ($dateSatrt) {
+            $start = new \DateTime($dateSatrt);
+            $start->setTime(00, 00, 00);
+        }
+
+        if ($dateEnd) {
+            $end = new \DateTime($dateEnd);
+            $end->setTime(23, 59, 59);
+        }
+
+        return [$start, $end];
+    }
+
     /**
      * Show the form for creating a new resource.
      *

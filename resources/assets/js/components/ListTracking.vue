@@ -9,7 +9,59 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-xs-4" v-if="title">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="">Desde</label>
+                                    <datepicker
+                                        name = "start"
+                                        id = "start"
+                                        language="es"
+                                        input-class = "form-control"
+                                        format = "MM/dd/yyyy"
+                                        @input="changeStart($event)"
+                                        v-model="initStart"
+                                        ></datepicker>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="">Hasta</label>
+                                    <datepicker
+                                            name = "end"
+                                            id = "end"
+                                            language="es"
+                                            input-class = "form-control"
+                                            format = "MM/dd/yyyy"
+                                            @input="changeEnd($event)"
+                                            v-model="initEnd"
+                                            ></datepicker>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <button
+                                            class="btn btn-primary"
+                                            @click="search()"
+                                            v-if="!loading"
+                                            >
+                                        <i class="glyphicon glyphicon-search"></i>
+                                        Buscar
+                                    </button>
+                                    <img src="/img/loading.gif" v-if="loading">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-bind:class="[ title ? 'col-sm-8' : 'col-sm-12' ]">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <table class="table table-responsive table-striped">
@@ -25,7 +77,46 @@
                                 <th width="5%"></th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody v-if="resolved">
+                                <template v-for="tracking in data.listTraking">
+                                    <!-- Info -->
+                                    <tr>
+                                        <td>{{ tracking.name }}</td>
+                                        <td>{{ tracking.phone }}</td>
+                                        <td>{{ tracking.email }}</td>
+                                        <td>{{ tracking.note }}</td>
+                                        <td>
+                                            {{ tracking.secretary ? tracking.secretary.name : '' }}
+                                        </td>
+                                        <td>
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-primary"
+                                                    data-toggle="modal"
+                                                    data-target="#changeStatusTrackingModal"
+                                                    @click="selectTracking(tracking)"
+                                            >
+                                                <i class="glyphicon glyphicon-edit"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-danger"
+                                                    v-if="user.hasRole.admin"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteTrackingModal"
+                                                    @click="trackingToDelete = tracking.id"
+                                            >
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Notes -->
+                                </template>
+                            </tbody>
+                            <tbody v-if="! resolved">
                                 <template v-for="tracking in trackingList">
                                     <!-- Info -->
                                     <tr>
@@ -174,7 +265,12 @@
 </template>
 
 <script>
+    import Datepicker from 'vuejs-datepicker';
+
     export default {
+        components: {
+            Datepicker
+        },
         props: {
             trackingList: {
                 type: Array,
@@ -199,17 +295,69 @@
         data () {
             return {
                 loading: false,
+                initStart: new Date(),
+                initEnd: new Date(),
+                resolved: false,
                 form: {
                     note: null,
                     tracking_id: null,
                     status: null,
                     secretary_id: 0
                 },
-                trackingToDelete: null
+                trackingToDelete: null,
+                data: {
+                    start: '',
+                    end: '',
+                    listTraking: []
+                }
             }
         },
+        mounted: function () {
+            const date = new Date();
+            const day = date.getDate() >= 10 ? date.getDate() : '0' + date.getDate();
+            const month = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
+            const year = date.getFullYear();
 
+            this.data.start = year + '-' + month + '-' + day;
+            this.data.end = year + '-' + month + '-' + day;
+        },
         methods: {
+            search: function () {
+                this.loading = true;
+                let payments = 0;
+                let commission = 0;
+                let expenses = 0;
+                this.datacollection = [];
+                axios.get(`/user/tracking/search/${this.data.start}/${this.data.end}`)
+                .then((response) => {
+                    this.loading = false
+                    this.resolved = true
+                    this.data.listTraking = response.data.trackingList
+                    console.log(response)
+                })
+                .catch((err) => {
+                    
+                    console.log(err);
+                    this.loading = false;
+                })
+            },
+
+            changeStart: function (date) {
+                let day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
+                let month = ((date.getMonth() + 1) < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+                let year = date.getFullYear();
+
+                this.data.start = year + '-' + month + '-' + day;
+            },
+
+            changeEnd: function (date) {
+                let day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
+                let month = ((date.getMonth() + 1) < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+                let year = date.getFullYear();
+
+                this.data.end = year + '-' + month + '-' + day;
+            },
+
             validateForm () {
                 this.$validator.validateAll().then(res => {
                     if (res) {

@@ -118,6 +118,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     // Seguimientos
     Route::post('tracking/note', 'User\TrackingController@note');
     Route::get('tracking/resolved', 'User\TrackingController@resolved')->name('tracking.resolved');
+    Route::get('tracking/search/{dateStart}/{dateEnd}', 'User\TrackingController@search')->name('tracking.search');
     Route::resource('tracking', 'User\TrackingController');
 
     // Notificaciones
