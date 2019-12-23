@@ -33,7 +33,7 @@
                             @if(count($callLogs))
                                 @foreach($callLogs as $call)
                                     <tr>
-                                        <td>{{ $call->callDateTime()->format('m/d/Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($call->call_date)->format('d/m/Y') }}</td>
                                         <td>{{ $call->patient ? $call->patient->name : $call->callBudget->name }}</td>
                                         <td>
                                             {{ $call->patient ? $call->patient->phone :

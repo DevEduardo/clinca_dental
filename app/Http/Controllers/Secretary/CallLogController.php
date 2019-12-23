@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CallLogController extends Controller
 {
@@ -55,14 +56,18 @@ class CallLogController extends Controller
     public function index()
     {
         $callLogs = CallLog::orderByDesc('call_date')
-            ->whereDate('call_date', '<=', new \DateTime('now 23:59:59'))
+            ->whereDate('call_date', '<=', Carbon::now()->format('Y-m-d'))
             ->where('status', '<>', CallLog::STATUS_NOT_INTERESTED)
             ->where('status', '<>', CallLog::STATUS_SCHEDULED)
             ->with(['statusHistory', 'patient'])
         ;
 
         if (! Auth::user()->isAdmin()) {
-            $callLogs->where('user_id', Auth::user()->id)->orWhere('secretary_id', Auth::user()->id);
+            $callLogs->where('user_id', Auth::user()->id)->orWhere('secretary_id', Auth::user()->id)
+            ->whereDate('call_date', '<=', Carbon::now()->format('Y-m-d'))
+            ->where('status', '<>', CallLog::STATUS_NOT_INTERESTED)
+            ->where('status', '<>', CallLog::STATUS_SCHEDULED)
+            ->with(['statusHistory', 'patient']);
         }
 
         $callLogs = $callLogs->paginate();
