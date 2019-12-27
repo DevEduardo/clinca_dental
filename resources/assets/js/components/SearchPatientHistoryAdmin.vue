@@ -180,7 +180,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
+                                                    <span v-if="serviceEdit !== service.id || user.edit_date_of_services">
                                                         {{ service.product.name }}
                                                     </span>
                                                 </td>
@@ -195,7 +195,7 @@
                                                             v-if="serviceEdit === service.id && user.hasRole.admin"
                                                         >
 
-                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
+                                                    <span v-if="serviceEdit !== service.id || user.edit_date_of_services">
                                                         {{ service.tooth }}
                                                     </span>
                                                 </td>
@@ -215,7 +215,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
+                                                    <span v-if="serviceEdit !== service.id || user.edit_date_of_services">
                                                         {{ service.doctor.name }}
                                                     </span>
                                                 </td>
@@ -235,7 +235,7 @@
                                                         </option>
                                                     </select>
 
-                                                    <span v-if="serviceEdit !== service.id || user.hasRole.secretary">
+                                                    <span v-if="serviceEdit !== service.id || user.edit_date_of_services">
                                                         {{ service.assistant.name }}
                                                     </span>
                                                 </td>

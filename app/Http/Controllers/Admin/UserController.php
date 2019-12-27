@@ -94,6 +94,7 @@ class UserController extends Controller
         $user->external = in_array('doctor', $roleCodes) ? $request->external : false;
         $user->management_inventory = $request->management_inventory;
         $user->management_supply = $request->management_supply;
+        $user->edit_date_of_services = $request->editDateOfServices;
         $user->save();
 
         $user->roles()->sync($roleIds);
