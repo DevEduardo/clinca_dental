@@ -765,7 +765,7 @@
             updatePatientHistory: function (service) {
                 this.serviceLoading = service.id;
                 let url = '/user/service/' + service.public_id + '/updateService'
-                if (this.user.hasRole.secretary) {
+                if (this.user.edit_date_of_services) {
                     url = '/user/service/' + service.public_id + '/updateServiceSecretary'
                 }
                 axios.put(url, service)

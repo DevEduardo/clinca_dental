@@ -108,12 +108,20 @@
                     @endif
 
                     <!-- Patient -->
-                    @if(Auth::user()->hasPermission('patient.create') || Auth::user()->hasPermission('patient.index') ||
-                        Auth::user()->hasPermission('service.create') || Auth::user()->hasPermission('service.search') ||
-                        Auth::user()->hasPermission('budget.create') || Auth::user()->hasPermission('budget.index') ||
-                        Auth::user()->hasPermission('expense.create') || Auth::user()->hasPermission('expense.index') ||
-                        Auth::user()->hasPermission('payment.create') || Auth::user()->hasPermission('appointment.index') ||
-                        Auth::user()->hasPermission('appointment.create'))
+                    @if(
+                        Auth::user()->hasPermission('patient.create') || 
+                        Auth::user()->hasPermission('patient.index') ||
+                        Auth::user()->hasPermission('service.create') || 
+                        Auth::user()->hasPermission('service.search') ||
+                        Auth::user()->hasPermission('budget.create') || 
+                        Auth::user()->hasPermission('budget.index') ||
+                        Auth::user()->hasPermission('expense.create') || 
+                        Auth::user()->hasPermission('expense.index') ||
+                        Auth::user()->hasPermission('payment.create') ||
+                        Auth::user()->hasPermission('appointment.index') ||
+                        Auth::user()->hasPermission('appointment.create') ||
+                        Auth::user()->edit_date_of_services
+                    )
 
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -145,7 +153,7 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->hasPermission('service.search'))
+                                @if(Auth::user()->hasPermission('service.search') || Auth::user()->edit_date_of_services)
                                     <li>
                                         <a href="{{ route('service.search') }}">
                                             <i class="glyphicon glyphicon-search"></i>
