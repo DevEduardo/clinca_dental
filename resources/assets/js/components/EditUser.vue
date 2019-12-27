@@ -121,7 +121,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-sm-4" v-if="hasRole(doctorRole.id)">
+                                    <div class="col-sm-3" v-if="hasRole(doctorRole.id)">
                                         <div class="form-group">
                                             <label for="external">¿Externo?</label>
                                             <div>
@@ -130,7 +130,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="management_inventory">¿Maneja inventario?</label>
                                             <div>
@@ -139,11 +139,20 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="management_inventory">¿Maneja insumo?</label>
                                             <div>
                                                 <input type="checkbox" v-model="form.management_supply" id="management_supply">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="editDateOfServices">¿Modifica fecha de servicios?</label>
+                                            <div>
+                                                {{ form.editDateOfServices }}
+                                                <input type="checkbox" v-model="form.editDateOfServices" id="editDateOfServices">
                                             </div>
                                         </div>
                                     </div>
