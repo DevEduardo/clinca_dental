@@ -143,16 +143,21 @@
                                         <div class="form-group">
                                             <label for="management_inventory">¿Maneja insumo?</label>
                                             <div>
-                                                <input type="checkbox" v-model="form.management_supply" id="management_supply">
+                                                <input 
+                                                type="checkbox" 
+                                                v-model="form.management_supply" 
+                                                id="management_supply">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label for="editDateOfServices">¿Modifica fecha de servicios?</label>
+                                            <label for="edit_date_of_services">¿Modifica fecha de servicios?</label>
                                             <div>
-                                                {{ form.editDateOfServices }}
-                                                <input type="checkbox" v-model="form.editDateOfServices" id="editDateOfServices">
+                                                <input 
+                                                type="checkbox" 
+                                                v-model="form.edit_date_of_services" 
+                                                id="edit_date_of_services">
                                             </div>
                                         </div>
                                     </div>
