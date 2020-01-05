@@ -457,6 +457,7 @@
 
             search: function () {
                 this.loading = true;
+                this.data.search = true
                 axios.get('/user/expense/' + this.patient.public_id + '/search?start=' + this.data.start + '&end=' + this.data.end)
                     .then((res) => {
                         this.loading = false;
