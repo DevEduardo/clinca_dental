@@ -175,6 +175,48 @@ class ReportController extends Controller
     }
 
     /**
+     * Carga la vista para el reporte de servicios por paciente
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function servicesPerPatient()
+    {
+        return view('admin.report.servicesPerPatient');
+    }
+
+     /**
+     * Consulta la data para el reporte de ultimos servicios por paciente
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function servicesPerPatientData(Request $request)
+    {
+        $start = new \DateTime($request->start);
+        $start->setTime(00, 00, 00);
+        $end = new \DateTime($request->end);
+        $end->setTime(23, 59, 59);
+
+        $services = PatientHistory::with([
+                'product',
+                'doctor',
+                'assistant',
+                'patient',
+            ])
+            ->where('patient_history.created_at', '>=', $start)
+            ->where('patient_history.created_at', '<=', $end)
+            ->groupBy('patient_history.patient_id')
+            ->get()
+        ;
+
+
+        return new JsonResponse([
+            'success' => true,
+            'services' => $services->toArray()
+        ]);
+    }
+
+    /**
      * Carga la vista para el reporte de comisiones de doctores
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

@@ -409,6 +409,14 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->hasPermission('report.servicesAndPaymentsParPatient'))
+                                    <li>
+                                        <a href="{{ route('report.servicesPerPatient') }}">
+                                            <i class="glyphicon glyphicon-file"></i>
+                                            Servicios por paciente
+                                        </a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->hasPermission('report.doctorCommissions'))
                                     <li>
                                         <a href="{{ route('report.doctorCommissions') }}">

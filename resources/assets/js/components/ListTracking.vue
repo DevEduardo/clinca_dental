@@ -67,6 +67,7 @@
                         <table class="table table-responsive table-striped">
                             <thead>
                             <tr>
+                                <th>Fecha de creación</th>
                                 <th>Nombre</th>
                                 <th>Telefono</th>
                                 <th>Email</th>
@@ -81,6 +82,7 @@
                                 <template v-for="tracking in data.listTraking">
                                     <!-- Info -->
                                     <tr>
+                                        <td>{{ tracking.created_at }}</td>
                                         <td>{{ tracking.name }}</td>
                                         <td>{{ tracking.phone }}</td>
                                         <td>{{ tracking.email }}</td>
@@ -120,6 +122,7 @@
                                 <template v-for="tracking in trackingList">
                                     <!-- Info -->
                                     <tr>
+                                        <td>{{ tracking.created_at }}</td>
                                         <td>{{ tracking.name }}</td>
                                         <td>{{ tracking.phone }}</td>
                                         <td>{{ tracking.email }}</td>

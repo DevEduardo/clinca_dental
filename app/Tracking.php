@@ -26,6 +26,11 @@ class Tracking extends Model
 
    // protected $appends = ['statusText'];
 
+   public function getCreatedAtAttribute($value)
+   {
+        return \Carbon\Carbon::parse($value)->format('d/m/Y');
+   }
+
     /**
      * Patient
      *
