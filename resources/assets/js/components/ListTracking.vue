@@ -9,11 +9,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-4" v-if="title">
+            <div class="col-xs-12" v-if="title">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Desde</label>
                                     <datepicker
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Hasta</label>
                                     <datepicker
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div v-bind:class="[ title ? 'col-sm-8' : 'col-sm-12' ]">
+            <div v-bind:class="[ title ? 'col-sm-12' : 'col-sm-12' ]">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <table class="table table-responsive table-striped">
@@ -114,6 +114,7 @@
                                             </button>
                                         </td>
                                     </tr>
+                                    
 
                                     <!-- Notes -->
                                 </template>
@@ -154,7 +155,18 @@
                                             </button>
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <td colspan="8">
+                                            <div class="alert alert-info"  v-for="notes in tracking.tracking_notes">
+                                                <p>
+                                                    <strong>
+                                                        {{ notes.note }}
+                                                        <small>({{ notes.created_at  }})</small>
+                                                    </strong><br>
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     <!-- Notes -->
                                 </template>
                             </tbody>

@@ -56,7 +56,8 @@ class TrackingController extends Controller
     {
         $trackingList = Tracking::query()
         ->with([
-            'secretary'
+            'secretary',
+            'trackingNotes'
         ])
         ->where('status', Tracking::STATUS_RESOLVED);
 

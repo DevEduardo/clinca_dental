@@ -5,7 +5,7 @@
                 <h1>
                     <i class="glyphicon glyphicon-file" v-if="! loading"></i>
                     <img src="/img/loading.gif" v-if="loading">
-                    Reporte de servicios por paciente
+                    Reporte de último servicio por paciente
                 </h1>
             </div>
         </div>
@@ -73,13 +73,14 @@
                                             <tr>
                                                 <th width="12%">Fecha</th>
                                                 <th width="20%">Paciente</th>
+                                                <!--
                                                 <th>Tipo</th>
                                                 <th>Diente</th>
                                                 <th>Doctor</th>
                                                 <th>Asistente</th>
                                                 <th>Precio</th>
                                                 <th>Qty</th>
-                                                <th>Total</th>
+                                                <th>Total</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -87,13 +88,14 @@
                                                 <tr>
                                                     <td>{{ dateFormat(service.created_at) }}</td>
                                                     <td>{{ service.patient.name }}</td>
+                                                    <!--
                                                     <td>{{ service.product.name }}</td>
                                                     <td>{{ service.tooth }}</td>
                                                     <td>{{ service.doctor.name }}</td>
                                                     <td>{{ service.assistant.name }}</td>
                                                     <td>{{ '$' + service.unit_price }}</td>
                                                     <td>{{ service.qty }}</td>
-                                                    <td>{{ '$' + service.price }}</td>
+                                                    <td>{{ '$' + service.price }}</td> -->
                                                 </tr>
                                             </template>
                                         </tbody>

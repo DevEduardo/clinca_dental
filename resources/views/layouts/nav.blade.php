@@ -413,7 +413,7 @@
                                     <li>
                                         <a href="{{ route('report.servicesPerPatient') }}">
                                             <i class="glyphicon glyphicon-file"></i>
-                                            Servicios por paciente
+                                            Último servicio por paciente
                                         </a>
                                     </li>
                                 @endif
