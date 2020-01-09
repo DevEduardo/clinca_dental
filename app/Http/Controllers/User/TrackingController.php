@@ -32,7 +32,8 @@ class TrackingController extends Controller
     {
         $trackingList = Tracking::query()
             ->with([
-                'secretary'
+                'secretary',
+                'trackingNotes'
             ])
             ->where('status', Tracking::STATUS_PENDING);
 
@@ -54,20 +55,10 @@ class TrackingController extends Controller
      */
     public function resolved()
     {
-        $trackingList = Tracking::query()
-        ->with([
-            'secretary',
-            'trackingNotes'
-        ])
-        ->where('status', Tracking::STATUS_RESOLVED);
-
-        if (!Auth::user()->isAdmin()) {
-            $trackingList->where('secretary_id', Auth::user()->id);
-        }
-
+        
         $title = true;
-        $trackingList = $trackingList->get();
-        $secretaries = User::query()->hasRole(['secretary', 'admin'], 'or')->get();
+        $trackingList =[];
+        $secretaries =[];
 
         return view('user.tracking.resolved', compact('trackingList', 'secretaries', 'title'));
     }
@@ -76,7 +67,8 @@ class TrackingController extends Controller
     {   
         $trackingList = Tracking::query()
         ->with([
-            'secretary'
+            'secretary',
+            'trackingNotes'
         ])
         ->where('status', Tracking::STATUS_RESOLVED)
         ->whereBetween('created_at', $this->getDateRange($dateStart, $dateEnd));

@@ -114,7 +114,18 @@
                                             </button>
                                         </td>
                                     </tr>
-                                    
+                                     <tr>
+                                        <td colspan="8">
+                                            <div class="alert alert-info"  v-for="notes in tracking.tracking_notes">
+                                                <p>
+                                                    <strong>
+                                                        {{ notes.note }}
+                                                        <small>({{ notes.created_at  }})</small>
+                                                    </strong><br>
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
 
                                     <!-- Notes -->
                                 </template>
@@ -335,6 +346,7 @@
 
             this.data.start = year + '-' + month + '-' + day;
             this.data.end = year + '-' + month + '-' + day;
+            this.search()
         },
         methods: {
             search: function () {
