@@ -196,8 +196,21 @@ class ReportController extends Controller
         $start->setTime(00, 00, 00);
         $end = new \DateTime($request->end);
         $end->setTime(23, 59, 59);
-
-        $services = PatientHistory::with([
+        if($request->dead == "true") {
+            $services = PatientHistory::with([
+                'product',
+                'doctor',
+                'assistant',
+                'patient',
+            ])
+            ->where('patient_history.created_at', '>=', $start)
+            ->where('patient_history.created_at', '<=', $end)
+            ->where('patient_history.dead_file', 1)
+            ->groupBy('patient_history.patient_id')
+            ->get();
+        } 
+        if($request->dead == "false") {
+            $services = PatientHistory::with([
                 'product',
                 'doctor',
                 'assistant',
@@ -206,13 +219,29 @@ class ReportController extends Controller
             ->where('patient_history.created_at', '>=', $start)
             ->where('patient_history.created_at', '<=', $end)
             ->groupBy('patient_history.patient_id')
-            ->get()
-        ;
+            ->get();
+        }
+        
 
 
         return new JsonResponse([
             'success' => true,
             'services' => $services->toArray()
+        ]);
+    }
+
+    public function changeStatusFile($id)
+    {
+        $services = PatientHistory::find($id);
+        if($services->dead_file) {
+            $services->dead_file = false;
+        }else {
+            $services->dead_file = true;
+        }
+
+        $services->save();
+        return new JsonResponse([
+            'success' => true
         ]);
     }
 

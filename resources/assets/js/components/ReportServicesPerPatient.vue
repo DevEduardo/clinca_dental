@@ -45,6 +45,19 @@
                                                 ></datepicker>
                                     </div>
                                 </div>
+                                 <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for=""> Solo archivos muertos </label>
+                                        <br>
+                                        <input 
+                                            type="checkbox"
+                                            v-model="data.deadFile"
+                                            id="deadFile"
+                                            name="deadFile"
+                                        >
+                                            
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -73,6 +86,7 @@
                                             <tr>
                                                 <th width="12%">Fecha</th>
                                                 <th width="20%">Paciente</th>
+                                                <th width="20%">Archivo muerto</th>
                                                 <!--
                                                 <th>Tipo</th>
                                                 <th>Diente</th>
@@ -88,6 +102,13 @@
                                                 <tr>
                                                     <td>{{ dateFormat(service.created_at) }}</td>
                                                     <td>{{ service.patient.name }}</td>
+                                                    <td>
+                                                       <input 
+                                                            type="checkbox"
+                                                            v-model="service.dead_file"
+                                                            @click="changeStatusFile(service.id)"
+                                                        >
+                                                    </td>
                                                     <!--
                                                     <td>{{ service.product.name }}</td>
                                                     <td>{{ service.tooth }}</td>
@@ -130,6 +151,7 @@
                     end: '',
                     patient_id: null,
                     filter: false,
+                    deadFile: false,
                     services: []
                 },
                 modal: {
@@ -170,11 +192,13 @@
                 this.loading = true;
                 console.log( '/admin/report/servicesPerPatientData' +
                         '?start=' + this.data.start +
-                        '&end=' + this.data.end )
+                        '&end=' + this.data.end +
+                        '&dead_file' + this.data.deadFile)
                 axios.get(
-                        '/admin/report/servicesPerPatientData' +
-                        '?start=' + this.data.start +
-                        '&end=' + this.data.end 
+                    '/admin/report/servicesPerPatientData' +
+                    '?start=' + this.data.start +
+                    '&end=' + this.data.end +
+                    '&dead=' + this.data.deadFile
                 )
                     .then((res) => {
                         this.loading = false;
@@ -182,6 +206,7 @@
                         if (res.data.success) {
                             this.data.services = Object.values(res.data.services);
                         }
+                        this.data.deadFile = false
                     })
                     .catch((err) => {
                         if (err.response.status === 403 || err.response.status === 405) {
@@ -190,7 +215,25 @@
                         console.log(err);
                         this.loading = false;
                         this.data.services = [];
+                        this.data.deadFile = false
                     })
+            },
+
+            changeStatusFile: function (idService) {
+                this.loading = true;
+               axios.get(
+                        '/admin/servicesPerPatient/changeStatusFile/' + idService
+                )
+                .then((res) => {
+                    this.loading = false;
+                    this.search()
+                })
+                .catch((err) => {
+                    if (err.response.status === 403 || err.response.status === 405) {
+                        location.href = '/';
+                    }
+                    console.log(err);
+                })
             },
 
             dateFormat: function (date) {

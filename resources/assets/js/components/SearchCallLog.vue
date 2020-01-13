@@ -128,6 +128,7 @@
                                             <th>Razón</th>
                                             <th>Paciente</th>
                                             <th>Estatus</th>
+                                            <th >Accion</th>
                                         </tr>
                                         </thead>
                                         <tbody v-for="call in data.calls">
@@ -138,6 +139,16 @@
                                                 </td>
                                                 <td>{{ call.patient ? call.patient.name : call.call_budget.name }}</td>
                                                 <td>{{ data.status[call.status].statusText }}</td>
+                                                <td
+                                                    v-if="call.status == 3"
+                                                >
+                                                    <a 
+                                                        @click="activate(call.id)"
+                                                    >
+                                                        Activar como interesado
+                                                    </a>
+                                                </td>
+
                                             </tr>
 
                                             <!-- Status history -->
@@ -324,6 +335,10 @@
                         this.loading = false;
                         this.data.calls = [];
                     })
+            },
+
+            activate: function (callId) {
+
             },
 
             dateFormat: function (date) {
