@@ -18,7 +18,7 @@ class UserController extends Controller
      * construct
      */
     public function __construct()
-    {
+    {/*
         $this->middleware('admin')->except([
             'search',
             'assistantList'
@@ -26,7 +26,7 @@ class UserController extends Controller
 
        // $this->middleware('doctor')->only(['assistantList']);
 
-        $this->middleware('secretary')->only(['search']);
+        $this->middleware('secretary')->only(['search']);*/
     }
 
     /**
@@ -85,11 +85,9 @@ class UserController extends Controller
 
         $user = new User($request->all());
         $user->password = bcrypt($request->password);
-        $user->logo = Auth::user()->logo;
-        $user->business_name = Auth::user()->business_name;
-        $user->email = Auth::user()->email;
-        $user->address = Auth::user()->address;
-        $user->phone = Auth::user()->phone;
+        $user->username = $request->username;
+        $user->name = $request->name;
+        $user->email = $request->email;
         $user->generatePublicId();
         $user->external = in_array('doctor', $roleCodes) ? $request->external : false;
         $user->management_inventory = $request->management_inventory;

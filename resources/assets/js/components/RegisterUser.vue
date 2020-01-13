@@ -188,9 +188,9 @@
 
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label for="editDateOfServices">¿Modifica fecha de servicios?</label>
+                                            <label for="edit_date_of_services">¿Modifica fecha de servicios?</label>
                                             <div>
-                                                <input type="checkbox" v-model="form.editDateOfServices" id="editDateOfServices">
+                                                <input type="checkbox" v-model="form.edit_date_of_services" id="edit_date_of_services">
                                             </div>
                                         </div>
                                     </div>
@@ -208,7 +208,10 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <img src="/img/loading.gif" v-if="loading">
-                                        <button class="btn btn-success" v-if="!loading">
+                                        <button 
+                                            class="btn btn-success" 
+                                            v-if="!loading"
+                                            >
                                             <i class="glyphicon glyphicon-saved"></i>
                                             Registrar usuario
                                         </button>
@@ -299,7 +302,7 @@
                             location.href = '/';
                         }
                         this.loading = false;
-                        console.log(err.response);
+                        console.log(err.response.config.data);
                     })
                 ;
             },
