@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Tracking;
 use App\TrackingNote;
 use App\User;
+use App\CallLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -59,7 +60,6 @@ class TrackingController extends Controller
         $title = true;
         $trackingList =[];
         $secretaries =[];
-
         return view('user.tracking.resolved', compact('trackingList', 'secretaries', 'title'));
     }
 
@@ -72,7 +72,7 @@ class TrackingController extends Controller
         ])
         ->where('status', Tracking::STATUS_RESOLVED)
         ->whereBetween('created_at', $this->getDateRange($dateStart, $dateEnd));
-
+        
         if (!Auth::user()->isAdmin()) {
             $trackingList->where('secretary_id', Auth::user()->id);
         }
@@ -80,10 +80,18 @@ class TrackingController extends Controller
         $trackingList = $trackingList->get();
         $secretaries = User::query()->hasRole(['secretary', 'admin'], 'or')->get();
 
+        $status[CallLog::STATUS_PENDING] = ['statusText' => trans('message.callLog.status.pending')];
+        $status[CallLog::STATUS_SCHEDULED] = ['statusText' => trans('message.callLog.status.scheduled')];
+        $status[CallLog::STATUS_NOT_INTERESTED] = ['statusText' => trans('message.callLog.status.no')];
+        $status[CallLog::STATUS_NOT_ANSWER_CALL] = ['statusText' => trans('message.callLog.status.notAnswerCall')];
+        $status[CallLog::STATUS_CALL_AGAIN] = ['statusText' => trans('message.callLog.status.callAgain')];
+
         return new JsonResponse([
             'success' => 200,
             'trackingList' => $trackingList,
-            'secretaries' => $secretaries
+            'secretaries' => $secretaries,
+            'callLogs' => CallLog::with('statusHistory')->get(),
+            'callStatus' => $status
         ]);
     }
 

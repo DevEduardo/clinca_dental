@@ -120,9 +120,30 @@
                                                 <p>
                                                     <strong>
                                                         {{ notes.note }}
-                                                        <small>({{ notes.created_at  }})</small>
+                                                        <small>({{ dateFormat(notes.created_at)  }})</small>
                                                     </strong><br>
                                                 </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="8">
+                                            <div   v-for="notess in data.trackingListNotes">
+                                                <div v-if="notess.patient_id == tracking.patient_id">
+                                                    <div 
+                                                        class="alert alert-info"
+                                                        v-for="callLog in notess.status_history"
+                                                        v-bind:key="callLog"
+                                                    >
+                                                        <strong>
+                                                            {{ data.statusTex[callLog.status].statusText }}
+                                                            <small>({{ dateFormat(callLog.created_at) }})</small>
+                                                        </strong><br>
+                                                        <span v-html="callLog.note"></span>
+                                                    </div>
+                                                </div>
+                                                
                                             </div>
                                         </td>
                                     </tr>
@@ -178,6 +199,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    
                                     <!-- Notes -->
                                 </template>
                             </tbody>
@@ -334,7 +356,9 @@
                 data: {
                     start: '',
                     end: '',
-                    listTraking: []
+                    listTraking: [],
+                    trackingListNotes: [],
+                    statusTex:[]
                 }
             }
         },
@@ -360,6 +384,8 @@
                     this.loading = false
                     this.resolved = true
                     this.data.listTraking = response.data.trackingList
+                    this.data.trackingListNotes = response.data.callLogs
+                    this.data.statusTex = response.data.callStatus
                     console.log(response)
                 })
                 .catch((err) => {
@@ -437,7 +463,14 @@
                 this.form.tracking_id = tracking.id;
                 this.form.status = tracking.status;
                 this.form.secretary_id = tracking.secretary_id ? tracking.secretary_id : 0;
-            }
+            },
+
+            dateFormat: function (date) {
+                let format = date.split(' ');
+                format = format[0].split('-');
+
+                return format[1] + '/' + format[2] + '/' + format[0];
+            },
         }
     }
 </script>

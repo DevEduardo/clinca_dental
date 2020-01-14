@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\CallLog;
+
 class Tracking extends Model
 {
     use SoftDeletes;
@@ -76,4 +78,5 @@ class Tracking extends Model
 
         return '';
     }
+
 }
