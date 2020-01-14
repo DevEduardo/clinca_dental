@@ -143,9 +143,10 @@
                                                     v-if="call.status == 3"
                                                 >
                                                     <a 
+                                                        class="btn btn-primary btn-sm"
                                                         @click="activate(call.id)"
                                                     >
-                                                        Activar como interesado
+                                                        Reactivar
                                                     </a>
                                                 </td>
 
@@ -338,7 +339,19 @@
             },
 
             activate: function (callId) {
-
+                this.loading = true;
+                axios.get(`/user/reactivateCall/${callId}`)
+                    .then((res) => {
+                        this.loading = false;
+                        this.search()
+                    })
+                    .catch((err) => {
+                        if (err.response.status === 403 || err.response.status === 405) {
+                            location.href = '/';
+                        }
+                        console.log(err);
+                        this.loading = false;
+                    })
             },
 
             dateFormat: function (date) {

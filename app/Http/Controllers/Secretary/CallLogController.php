@@ -265,4 +265,9 @@ class CallLogController extends Controller
             'status' => $status
         ]);
     }
+
+    public function reactivateCall($id)
+    {
+        CallLog::find($id)->update(['status' => CallLog::STATUS_PENDING]);
+    }
 }
