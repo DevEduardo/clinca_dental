@@ -5,7 +5,7 @@
                 <h1>
                     <i class="glyphicon glyphicon-search" v-if="! loading"></i>
                     <img src="/img/loading.gif" v-if="loading">
-                    Busqueda de servicios
+                    Busqueda de servicios 
                 </h1>
             </div>
         </div>
@@ -102,25 +102,24 @@
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <button
-                                                class="btn btn-primary"
-                                                @click="searchPatientHistory()"
-                                                v-if="!loading"
-                                                >
+                                            class="btn btn-primary"
+                                            @click="searchPatientHistory()"
+                                            v-if="!loading"
+                                        >
                                             <i class="glyphicon glyphicon-search"></i>
                                             Buscar
                                         </button>
 
-                                        <button
+                                        <a
                                                 class="btn btn-success"
                                                 data-toggle="modal"
                                                 data-target="#registerServiceModal"
                                         >
                                             Registrar servicio
-                                        </button>
+                                        </a>
                                         <register-service-modal
                                             modal-id = "registerServiceModal"
                                             :patient-id = "patient.id"
-                                            @register-patient-history="searchPatientHistory()"
                                         ></register-service-modal>
 
                                         <img src="/img/loading.gif" v-if="loading">
