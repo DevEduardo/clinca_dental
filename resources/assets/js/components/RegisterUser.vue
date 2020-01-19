@@ -250,7 +250,7 @@
                     external: false,
                     management_inventory: false,
                     management_supply: false,
-                    editDateOfServices: false,
+                    edit_date_of_services: false,
                     roles: []
                 },
                 doctorRole: null,
