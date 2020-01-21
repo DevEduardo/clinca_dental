@@ -54,6 +54,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     // Insumos
     Route::put('supply/list/{supply}', 'Assistant\SupplyController@updateList');
+    Route::get('supply/stock', 'Assistant\SupplyController@supplyStock')->name('supply.stock');
+    Route::post('report/stockData', 'Assistant\SupplyController@supplyStockData')->name('supply.stockData');
     Route::resource('supply', 'Assistant\SupplyController');
 
     // Solicitud de insumos

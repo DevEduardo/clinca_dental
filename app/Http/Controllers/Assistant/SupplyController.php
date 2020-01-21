@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\SupplyType;
 use App\SupplyBrand;
+use App\SupplyInventoryMovement;
 
 class SupplyController extends Controller
 {
@@ -228,5 +229,73 @@ class SupplyController extends Controller
             'success' => true,
             'redirect' => route('supply.index')
         ]);
+    }
+
+    public function supplyStock()
+    {   
+        $supplyBrands = SupplyBrand::all();
+        $supplyTypes = SupplyType::all();
+        return view('assistant.supply.stock', compact('supplyBrands', 'supplyTypes'));
+    }
+
+    public function supplyStockData(Request $request)
+    {
+        $inventory = SupplyInventoryMovement::with([
+            'supply',
+            'supply.supplyBrand',
+            'supply.supplyType'
+        ])
+        ->get();
+
+        $response = [];
+        $supplyBrand = (int) $request->brand;
+        $supplyType = (int) $request->type;
+        $supplyQuantity = (int) $request->quantity;
+        $width = str_replace('.', '', $request->width);
+        $width = str_replace(',', '.', $width);
+        $width = (float) $width;
+        $height = str_replace('.', '', $request->height);
+        $height = str_replace(',', '.', $height);
+        $height = (float) $height;
+
+
+        foreach ($inventory as $movement) {
+
+            if ($movement->supply->trashed()) {
+                continue;
+            }
+
+            if ($supplyBrand !== 0 && $movement->supply->supplyBrand->id !== $supplyBrand) {
+                continue;
+            }
+
+            if ($supplyType !== 0 && $movement->supply->supplyType->id !== $supplyType) {
+                continue;
+            }
+
+            if ($width > 0 && $width !== $movement->supply->width) {
+                continue;
+            }
+
+            if ($height > 0 && $height !== $movement->supply->height) {
+                continue;
+            }
+
+            if ($supplyQuantity > 0 && $supplyQuantity < $movement->qty) {
+                continue;
+            }
+
+            if (! isset($response[$movement->supply->id])) {
+                
+                $response[$movement->supply->id] = [
+                    'supply' => $movement->supply,
+                    'qty' => 0
+                ];
+            }
+            
+            $response[$movement->supply->id]['qty'] += $movement->qty;
+        }
+
+        return new JsonResponse(['success' => true, 'inventory' => $response]);
     }
 }

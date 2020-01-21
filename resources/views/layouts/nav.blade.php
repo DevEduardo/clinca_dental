@@ -288,6 +288,14 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->hasPermission('supply.index'))
+                                    <li>
+                                        <a href="{{ route('supply.stock') }}">
+                                            <i class="glyphicon glyphicon-list-alt"></i>
+                                            Stock de insumos
+                                        </a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->hasPermission('supplyRequest.create'))
                                     <li>
                                         <a href="{{ route('supplyRequest.create') }}">
