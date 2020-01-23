@@ -212,7 +212,7 @@ class PatientHistoryController extends Controller
                 $note->save();
             }
         }
-
+/****************************************************************************/
         $images = $request->image ?? [];
         foreach ($images as $image) {
 
@@ -233,7 +233,7 @@ class PatientHistoryController extends Controller
             $rayX->url = $url;
             $rayX->save();
         }
-
+/****************************************************************************/
         // Si hay alguna cita asociada al paciente para ese dia se marca completa
         $appointments = Appointment::query()->whereBetween('date', [
                 $start,

@@ -6,6 +6,7 @@ use App\CallLog;
 use App\Patient;
 use App\PatientReference;
 use App\CallBudget;
+use App\PatientsImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +28,7 @@ class PatientController extends Controller
                     return new JsonResponse(null, 403);
                 }
 
-                return redirect()->route('home');
+                //return redirect()->route('home');
             }
 
             return $next($request);
@@ -92,9 +93,7 @@ class PatientController extends Controller
      * @return JsonResponse
      */
     public function store(Request $request)
-    {
-        DB::beginTransaction();
-
+    {   
         $patient = new Patient($request->all());
         $patient->nextPublicId();
 
@@ -116,7 +115,26 @@ class PatientController extends Controller
             $callLog->save();
         }
 
-        DB::commit();
+        if($request->image) {
+            $extension = '.' . $request->image->guessClientExtension();
+
+            $filename = uniqid() . $extension;
+            $url = 'uploads/patient/' . $patient->public_id . '/' . $filename;
+            $path = public_path('uploads/patient') . '/' . $patient->public_id;
+
+            if (! is_dir($path)) {
+                mkdir($path,0777,true);
+            }
+
+            $request->image->move($path, $filename);
+
+            $patientsImage = new PatientsImage();
+            $patientsImage->patient_id = $patient->id;
+            $patientsImage->url = $url;
+            $patientsImage->save();
+        }
+        
+
 
         $this->sessionMessage('message.patient.create');
 
