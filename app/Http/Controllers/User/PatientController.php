@@ -52,8 +52,7 @@ class PatientController extends Controller
      */
     public function index(Request $request)
     {
-        $patients = Patient::orderBy('id', 'DESC');
-
+        $patients = Patient::with('photo')->orderBy('id', 'DESC');
         if (Auth::user()->isSellManager()) {
             $patients->where('sell_manager_id', Auth::user()->id);
         }
@@ -134,8 +133,6 @@ class PatientController extends Controller
             $patientsImage->save();
         }
         
-
-
         $this->sessionMessage('message.patient.create');
 
         return new JsonResponse(['success' => true, 'redirect' => route('patient.index')]);
