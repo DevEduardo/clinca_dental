@@ -239,13 +239,26 @@ class SupplyController extends Controller
     }
 
     public function supplyStockData(Request $request)
-    {
-        $inventory = SupplyInventoryMovement::with([
+    {   
+        $inventory = SupplyInventoryMovement::select(
+            'supplies.id',
+            'supplies.name as nameSupply',
+            'supplies.width',
+            'supplies.height',
+            'supplies.supply_brand_id',
+            'supplies.supply_type_id',
+            'supply_inventory_movements.qty',
+            'supply_brands.name as nameBrands',
+            'supply_types.name as nameType'
+            )
+            ->join( 'supplies', 'supply_inventory_movements.supply_id', '=', 'supplies.id')
+            ->join('supply_brands', 'supply_brands.id', '=', 'supplies.supply_brand_id')
+            ->join('supply_types', 'supply_types.id', '=', 'supplies.supply_type_id');
+        /*$inventory = SupplyInventoryMovement::with([
             'supply',
             'supply.supplyBrand',
             'supply.supplyType'
-        ])
-        ->get();
+        ]);*/
 
         $response = [];
         $supplyBrand = (int) $request->brand;
@@ -257,27 +270,27 @@ class SupplyController extends Controller
         $height = str_replace('.', '', $request->height);
         $height = str_replace(',', '.', $height);
         $height = (float) $height;
+        if (! empty($request->dataSupply)) {
+            $inventory->where('supplies.name', 'LIKE', "%$request->dataSupply%")
+                ->orWhere('supply_brands.name', 'LIKE', "%$request->dataSupply%")
+                ->orWhere('supply_types.name', 'LIKE', "%$request->dataSupply%");
+        }
+        //return $inventory->get();
+        foreach ($inventory->get() as $movement) {
 
-
-        foreach ($inventory as $movement) {
-
-            if ($movement->supply->trashed()) {
+            if ($supplyBrand !== 0 && $movement->supply_brand_id !== $supplyBrand) {
                 continue;
             }
 
-            if ($supplyBrand !== 0 && $movement->supply->supplyBrand->id !== $supplyBrand) {
+            if ($supplyType !== 0 && $movement->supply_type_id !== $supplyType) {
                 continue;
             }
 
-            if ($supplyType !== 0 && $movement->supply->supplyType->id !== $supplyType) {
+            if ($width > 0 && $width !== $movement->width) {
                 continue;
             }
 
-            if ($width > 0 && $width !== $movement->supply->width) {
-                continue;
-            }
-
-            if ($height > 0 && $height !== $movement->supply->height) {
+            if ($height > 0 && $height !== $movement->height) {
                 continue;
             }
 
@@ -285,17 +298,18 @@ class SupplyController extends Controller
                 continue;
             }
 
-            if (! isset($response[$movement->supply->id])) {
+            if (! isset($response[$movement->id])) {
                 
-                $response[$movement->supply->id] = [
-                    'supply' => $movement->supply,
+                $response[$movement->id] = [
+                    'supply' => $movement,
                     'qty' => 0
                 ];
             }
             
-            $response[$movement->supply->id]['qty'] += $movement->qty;
+            $response[$movement->id]['qty'] += $movement->qty;
         }
-
+        //return $response;
         return new JsonResponse(['success' => true, 'inventory' => $response]);
     }
+
 }

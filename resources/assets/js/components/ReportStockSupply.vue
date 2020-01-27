@@ -103,6 +103,17 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <label for="">Filtrar por Insumo, Marca, Tipo</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Buscador"
+                                    v-model="searchData"
+                                    @keyup="searchSupply()"
+                                >
+                            </div>
                         </div>
 
                         <div class="row">
@@ -136,9 +147,9 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="(inventory, i) in data.results" :key="i">
-                                            <td>{{ inventory.supply.name }}</td>
-                                            <td>{{ inventory.supply.supply_brand.name }}</td>
-                                            <td>{{ inventory.supply.supply_type.name }}</td>
+                                            <td>{{ inventory.supply.nameSupply }}</td>
+                                            <td>{{ inventory.supply.nameBrands }}</td>
+                                            <td>{{ inventory.supply.nameType }}</td>
                                             <td>{{ inventory.supply.width + 'x' + inventory.supply.height }}</td>
                                             <td class="text-center">{{ inventory.qty }}</td>
                                         </tr>
@@ -178,12 +189,14 @@
         data() {
            return {
                 loading: false,
+                searchData: '',
                 data: {
                     brand: 0,
                     type: 0,
                     quantity: 0,
                     width: '',
                     height: '',
+                    dataSupply: '',
                     results: []
                 },
                 mask: {
@@ -197,7 +210,11 @@
         },
 
        methods: {
-        
+            searchSupply: function () {
+                this.loading = true;
+                this.data.dataSupply = this.searchData
+                this.search()
+            },
             search: function () {
                 this.loading = true;
 
@@ -216,7 +233,7 @@
                         if (err.response.status === 403 || err.response.status === 405) {
                             location.href = '/';
                         }
-                        console.log(err);
+                        console.log(err.response.data);
                         this.loading = false;
                         this.data.results = [];
                     })

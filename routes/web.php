@@ -57,6 +57,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('supply/stock', 'Assistant\SupplyController@supplyStock')->name('supply.stock');
     Route::post('report/stockData', 'Assistant\SupplyController@supplyStockData')->name('supply.stockData');
     Route::resource('supply', 'Assistant\SupplyController');
+    Route::get('patient/supply/{search}', 'Assistant\SupplyController@search');
 
     // Solicitud de insumos
     Route::get('supplyRequest/search', 'Assistant\SupplyRequestController@search')->name('supplyRequest.search');
