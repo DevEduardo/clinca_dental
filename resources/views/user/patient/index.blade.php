@@ -81,7 +81,7 @@
                                                     <img 
                                                         src="{{ asset($patient->photo->first()['url']) }}" 
                                                         title="{{ $patient->name }}"
-                                                        style="border-radius: 100%; width:50%; margin:auto"
+                                                        style="border-radius: 50%; width: 70px; height: 70px; margin:auto"
                                                     >
                                                 @else
                                                 @endif

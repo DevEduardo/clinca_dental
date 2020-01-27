@@ -159,13 +159,13 @@ class PatientController extends Controller
     {
         $patient = Patient::where('public_id', $id)->firstOrFail();
         $patientReferences = PatientReference::orderBy('description')->get();
-
+        $photo = asset($patient->photo->first()['url']);
         $patient->budgets = $patient->budgets()
             ->orderBy('id', 'DESC')
             ->paginate(12)
         ;
 
-        return view('user.patient.edit', compact('patient', 'patientReferences'));
+        return view('user.patient.edit', compact('patient', 'patientReferences', 'photo'));
     }
 
     /**
@@ -176,7 +176,7 @@ class PatientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
         $patient = Patient::where('public_id', $id)->firstOrFail();
         $patient->phone = $request->phone;
         $patient->name = $request->name;
@@ -184,6 +184,25 @@ class PatientController extends Controller
         $patient->patient_reference_id = $request->patient_reference_id;
         $patient->cancel_appointment = $request->cancel_appointment;
         $patient->save();
+            //unlink($patient->photo->first()['url']);
+        if($request->image) {
+            unlink($patient->photo->first()['url']);
+            $extension = '.' . $request->image->guessClientExtension();
+
+            $filename = uniqid() . $extension;
+            $url = 'uploads/patient/' . $patient->public_id . '/' . $filename;
+            $path = public_path('uploads/patient') . '/' . $patient->public_id;
+            
+            if (! is_dir($path)) {
+                mkdir($path,0777,true);
+            }
+
+            $request->image->move($path, $filename);
+
+            $patientsImage = PatientsImage::where('patient_id', $patient->id)->first();
+            $patientsImage->url = $url;
+            $patientsImage->save();
+        }
 
         $this->sessionMessage('message.patient.update');
 
