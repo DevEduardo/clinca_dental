@@ -195,6 +195,15 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="last_service">¿Ultimo servicio por paciente?</label>
+                                            <div>
+                                                <input type="checkbox" v-model="form.last_service" id="last_service">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-sm-3" v-if="doctorRole && hasRole(doctorRole.id)">
                                         <div class="form-group">
                                             <label for="password">¿Externo?</label>

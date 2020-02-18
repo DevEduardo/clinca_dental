@@ -93,6 +93,7 @@ class UserController extends Controller
         $user->management_inventory = $request->management_inventory;
         $user->management_supply = $request->management_supply;
         $user->edit_date_of_services = $request->edit_date_of_services;
+        $user->last_service = $request->last_service;
         $user->save();
 
         $user->roles()->sync($roleIds);
@@ -164,6 +165,7 @@ class UserController extends Controller
         $user->management_inventory = $request->management_inventory;
         $user->management_supply = $request->management_supply;
         $user->edit_date_of_services = $request->edit_date_of_services;
+        $user->last_service = $request->last_service;
         $user->save();
 
         $user->roles()->sync($roleIds);

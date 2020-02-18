@@ -190,16 +190,19 @@
 
             search: function () {
                 this.loading = true;
-                console.log( '/admin/report/servicesPerPatientData' +
+                let url =  '/admin/report/servicesPerPatientData' +
                         '?start=' + this.data.start +
                         '&end=' + this.data.end +
-                        '&dead_file' + this.data.deadFile)
-                axios.get(
-                    '/admin/report/servicesPerPatientData' +
-                    '?start=' + this.data.start +
-                    '&end=' + this.data.end +
-                    '&dead=' + this.data.deadFile
-                )
+                        '&dead=' + this.data.deadFile
+
+                if('{{ Auth::user()->last_service }}') {
+                    url = '/user/report/servicesPerPatientDataUser' +
+                        '?start=' + this.data.start +
+                        '&end=' + this.data.end +
+                        '&dead=' + this.data.deadFile
+                }
+                console.log(url)
+                axios.get(url)
                     .then((res) => {
                         this.loading = false;
 
@@ -221,9 +224,13 @@
 
             changeStatusFile: function (idService) {
                 this.loading = true;
-               axios.get(
-                        '/admin/servicesPerPatient/changeStatusFile/' + idService
-                )
+                let url =  '/admin/servicesPerPatient/changeStatusFile/' + idService
+
+                if('{{ Auth::user()->last_service }}') {
+                    url = '/user/servicesPerPatient/changeStatusFile/' + idService + '/user'
+                }
+                console.log(url)
+                axios.get( url )
                 .then((res) => {
                     this.loading = false;
                     this.search()

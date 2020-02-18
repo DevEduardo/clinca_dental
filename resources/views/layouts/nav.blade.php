@@ -386,14 +386,23 @@
                     @endif
 
                     <!-- Reportes -->
-                    @if(Auth::user()->hasPermission('report.servicesAndPayments') || Auth::user()->hasPermission('report.doctorCommissions') ||
-                        Auth::user()->hasPermission('report.expenses') || Auth::user()->hasPermission('report.payments') ||
-                        Auth::user()->hasPermission('report.servicesAndPaymentsPerPatient') || Auth::user()->hasPermission('report.guarantees') ||
-                        Auth::user()->hasPermission('report.patientsAndPatientsWithServices') || Auth::user()->hasPermission('report.budgets') ||
-                        Auth::user()->hasPermission('report.servicesPaymentsAndExpenses') || Auth::user()->hasPermission('report.servicesDiagnostics') ||
-                        Auth::user()->hasPermission('report.servicesSendLab') || Auth::user()->hasPermission('report.inventorySupply') ||
-                        Auth::user()->hasPermission('report.inventorySupplyMovement') || Auth::user()->hasPermission('report.sellManagerPatients') ||
-                        Auth::user()->hasPermission('report.callLog'))
+                    @if(Auth::user()->hasPermission('report.servicesAndPayments') || 
+                        Auth::user()->hasPermission('report.doctorCommissions') ||
+                        Auth::user()->hasPermission('report.expenses') || 
+                        Auth::user()->hasPermission('report.payments') ||
+                        Auth::user()->hasPermission('report.servicesAndPaymentsPerPatient') || 
+                        Auth::user()->hasPermission('report.guarantees') ||
+                        Auth::user()->hasPermission('report.patientsAndPatientsWithServices') || 
+                        Auth::user()->hasPermission('report.budgets') ||
+                        Auth::user()->hasPermission('report.servicesPaymentsAndExpenses') || 
+                        Auth::user()->hasPermission('report.servicesDiagnostics') ||
+                        Auth::user()->hasPermission('report.servicesSendLab') || 
+                        Auth::user()->hasPermission('report.inventorySupply') ||
+                        Auth::user()->hasPermission('report.inventorySupplyMovement') || 
+                        Auth::user()->hasPermission('report.sellManagerPatients') ||
+                        Auth::user()->hasPermission('report.callLog') || 
+                        Auth::user()->last_service
+                        )
 
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -417,9 +426,17 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->hasPermission('report.servicesAndPaymentsParPatient'))
+                                @if(Auth::user()->hasPermission('report.servicesAndPaymentsParPatient') )
                                     <li>
                                         <a href="{{ route('report.servicesPerPatient') }}">
+                                            <i class="glyphicon glyphicon-file"></i>
+                                            Último servicio por paciente
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->last_service)
+                                    <li>
+                                        <a href="{{ route('report.servicesPerPatientUser') }}">
                                             <i class="glyphicon glyphicon-file"></i>
                                             Último servicio por paciente
                                         </a>

@@ -13,7 +13,7 @@
 
             <div class="row">
 
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="panel panel-default">
                         <div class="panel-body">
 
@@ -159,6 +159,15 @@
                                                 v-model="form.edit_date_of_services" 
                                                 id="edit_date_of_services">
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="last_service">¿Ultimo servicio por paciente?</label>
+                                        <div>
+                                            <input type="checkbox" v-model="form.last_service" id="last_service">
                                         </div>
                                     </div>
                                 </div>
