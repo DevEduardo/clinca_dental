@@ -184,9 +184,15 @@ class PatientController extends Controller
         $patient->patient_reference_id = $request->patient_reference_id;
         $patient->cancel_appointment = $request->cancel_appointment;
         $patient->save();
-            //unlink($patient->photo->first()['url']);
+        $patient->load('photo');
+        
         if($request->image) {
-            unlink($patient->photo->first()['url']);
+            /*
+            if($patient->photo){
+                return $patient->photo->first()->url;
+                unlink($patient->photo->first()->url);
+            }
+            */
             $extension = '.' . $request->image->guessClientExtension();
 
             $filename = uniqid() . $extension;
@@ -200,8 +206,16 @@ class PatientController extends Controller
             $request->image->move($path, $filename);
 
             $patientsImage = PatientsImage::where('patient_id', $patient->id)->first();
-            $patientsImage->url = $url;
-            $patientsImage->save();
+            if($patientsImage){
+                $patientsImage->url = $url;
+                $patientsImage->update();
+            }else{
+                $patientsImage = new PatientsImage;
+                $patientsImage->patient_id = $patient->id;
+                $patientsImage->url = $url;
+                $patientsImage->save();
+            }
+            
         }
 
         $this->sessionMessage('message.patient.update');
