@@ -174,7 +174,6 @@
                                                         {{ expense.supplier.name }}
                                                     </span>
                                                     <span v-else>
-
                                                         <select
                                                                 :name="'supplier' + i"
                                                                 :id="'supplier' + i"
@@ -189,12 +188,27 @@
                                                                 {{ supplier.name }}
                                                             </option>
                                                         </select>
-
                                                     </span>
                                                 </td>
-                                                <td>{{ expense.patient_history ? expense.patient_history.public_id : ''  }}</td>
-                                                <td>{{ expense.description }}</td>
-                                                <td>{{ '$ ' + expense.amount  }}</td>
+                                                <td>
+                                                    {{ expense.patient_history ? expense.patient_history.public_id : ''  }}
+                                                </td>
+                                                <td>
+                                                    <span v-if="editExpense !== i">
+                                                        {{ expense.description }}
+                                                    </span>
+                                                    <span v-else>
+                                                        <input type="text" v-model="expense.description" :name="description">
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span v-if="editExpense !== i">
+                                                        {{ expense.amount }}
+                                                    </span>
+                                                    <span v-else>
+                                                        <input type="text" v-model="expense.amount" :name="amount">
+                                                    </span>
+                                                </td>
                                                 <td>
 
                                                     <!-- Editar -->
