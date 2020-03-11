@@ -260,6 +260,7 @@
                     management_inventory: false,
                     management_supply: false,
                     edit_date_of_services: false,
+                    last_service: false,
                     roles: []
                 },
                 doctorRole: null,
@@ -311,7 +312,7 @@
                             location.href = '/';
                         }
                         this.loading = false;
-                        console.log(err.response.config.data);
+                        console.log(err.response.data);
                     })
                 ;
             },

@@ -101,7 +101,7 @@ class PatientController extends Controller
         }
 
         $patient->save();
-
+        /*
         if (Auth::user()->isSellManager() && (bool) $request->register_call) {
             // Registra una llamada pendiente para este paciente
             $callLog = new CallLog();
@@ -113,7 +113,7 @@ class PatientController extends Controller
             $callLog->user_id = Auth::user()->id;
             $callLog->save();
         }
-
+*/
         if($request->image) {
             $extension = '.' . $request->image->guessClientExtension();
 
