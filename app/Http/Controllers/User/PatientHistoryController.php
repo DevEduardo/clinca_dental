@@ -30,6 +30,8 @@ class PatientHistoryController extends Controller
     public function __construct()
     {
 
+        $this->middleware('assistant')->only('create');
+        /*
         $this->middleware('doctor')->except([
             'searchService',
             'search'
@@ -41,7 +43,7 @@ class PatientHistoryController extends Controller
             'deleteImage',
             'updatePatientHistory'
         ]);
-
+        */
     }
 
     /**
@@ -212,7 +214,7 @@ class PatientHistoryController extends Controller
                 $note->save();
             }
         }
-/****************************************************************************/
+            /****************************************************************************/
         $images = $request->image ?? [];
         foreach ($images as $image) {
 
@@ -233,7 +235,7 @@ class PatientHistoryController extends Controller
             $rayX->url = $url;
             $rayX->save();
         }
-/****************************************************************************/
+        /****************************************************************************/
         // Si hay alguna cita asociada al paciente para ese dia se marca completa
         $appointments = Appointment::query()->whereBetween('date', [
                 $start,

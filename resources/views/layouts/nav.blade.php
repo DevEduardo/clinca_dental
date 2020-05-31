@@ -145,7 +145,8 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->hasPermission('service.create'))
+                                @if(Auth::user()->hasPermission('service.create') || 
+                                Auth::user()->isAssistant())
                                     <li>
                                         <a href="{{ route('service.create') }}">
                                             <i class="glyphicon glyphicon-plus"></i>
