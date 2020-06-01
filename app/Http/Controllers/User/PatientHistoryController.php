@@ -30,7 +30,7 @@ class PatientHistoryController extends Controller
     public function __construct()
     {
 
-        $this->middleware('assistant')->only('create');
+        //$this->middleware('assistant')->only('create');
         /*
         $this->middleware('doctor')->except([
             'searchService',
@@ -155,6 +155,9 @@ class PatientHistoryController extends Controller
             $service->created_at = $date;
             $service->price = $service->unit_price * $service->qty;
             $service->diagnostic_id = $data['diagnostic'];
+            if(!Auth::user()->isDoctor()) {
+                $service->doctor_id = $data['diagnostic'];
+            }
 
             if ($service->product->required_lab) {
                 // Si el servicio requiere laboratiro, guardo los datos de envio

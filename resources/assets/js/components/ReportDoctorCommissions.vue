@@ -588,11 +588,25 @@
 
                 return total;
             },
+            
+            calculateServices: function (services) {
+                let total = 0;
+
+                services.forEach((service) => {
+                    if (service.classification === 'Servicio') {
+                        total += service.amount;
+                    }
+                });
+
+                return total;
+            },
 
             totalCommission: function (data) {
                 let total = 0;
                 let expenses;
                 let commission;
+                let services
+                let amount = 0
                 //let discount;
                 let payments;
 
@@ -603,12 +617,19 @@
                     expenses = this.calculateExpenses(item.services);
                     //discount = this.calculateDiscount(item.services);
                     payments = this.calculatePayments(item.services);
+                    services = this.calculateServices(item.services);
 
-                    commission = (payments - expenses) * (item.commission / 100);
+                    if ( (payments - expenses) <= 0) {
+                        amount = services
+                    } else {
+                        amount = (payments - expenses)
+                    }
 
+                    commission = amount * (item.commission / 100);
+                    console.log(commission)
                     total += commission;
                 });
-
+                    console.log(total)
                 return total > 0 ? total : 0;
             },
 
