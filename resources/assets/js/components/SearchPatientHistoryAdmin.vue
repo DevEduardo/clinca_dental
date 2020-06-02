@@ -135,6 +135,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Fecha</th>
+                                                <th>Ingresado por</th>
                                                 <th>Código</th>
                                                 <th>Servicio</th>
                                                 <th>Diente</th>
@@ -162,6 +163,7 @@
                                                         {{ dateFormat(service.created_at) }}
                                                     </span>
                                                 </td>
+                                                <td>{{ (service.creator_user)? service.creator_user.name: '' }}</td>
                                                 <td>{{ service.public_id }}</td>
                                                 <td>
                                                     <select

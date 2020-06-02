@@ -9,6 +9,7 @@
         assistants = "{{ json_encode($assistants) }}"
         :suppliers = "{{ json_encode($suppliers) }}"
         :auth-user = "{{ Auth::user() }}"
+        :assistant = "{{ Auth::user()->isAssistant() }}"
         :doctors = "{{ $doctors }}"
     ></edit-patient-history>
 @endsection

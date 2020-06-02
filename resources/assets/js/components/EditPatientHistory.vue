@@ -118,7 +118,8 @@
                                     <thead>
                                         <tr>
                                             <th width="20%">Servicio</th>
-                                            <th width="20%">Asistente</th>
+                                            <th width="20%" v-if="assistant">Doctor</th>
+                                            <th width="20%" v-if="!assistant">Asistente</th>
                                             <th width="10%">Qty</th>
                                             <th width="15%">Diente</th>
                                             <th width="15%">Precio</th>
@@ -152,6 +153,7 @@
                                                 </p>
                                             </td>
                                             <td>
+
                                                 <select
                                                         :name="'assistant' + id"
                                                         :id="'assistant' + id"
@@ -160,6 +162,25 @@
                                                         v-model="service.assistant_id"
                                                         v-validate
                                                         data-vv-rules="required"
+                                                        v-if="assistant"
+                                                        >
+                                                    <option
+                                                            v-for="doctor in doctors"
+                                                            :value="doctor.id"
+                                                            >
+                                                        {{ doctor.name }}
+                                                    </option>
+                                                </select>
+
+                                                <select
+                                                        :name="'assistant' + id"
+                                                        :id="'assistant' + id"
+                                                        class="form-control"
+                                                        :class="{'input-error': errors.has('assistant' + id)}"
+                                                        v-model="service.assistant_id"
+                                                        v-validate
+                                                        data-vv-rules="required"
+                                                        v-if="!assistant"
                                                     >
                                                     <option
                                                             v-for="assistant in assistantUsers"
@@ -587,6 +608,7 @@
             'historyDate',
             'currentUser',
             'assistants',
+            'assistant',
             'suppliers',
             'authUser',
             'doctors'
