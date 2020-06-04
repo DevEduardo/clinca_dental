@@ -9,7 +9,7 @@
         assistants = "{{ json_encode($assistants) }}"
         :suppliers = "{{ json_encode($suppliers) }}"
         :auth-user = "{{ Auth::user() }}"
-        :assistant = "{{ Auth::user()->isAssistant() }}"
+        :assistant = "{{ (Auth::user()->isAssistant()) ? Auth::user()->isAssistant() : 0 }}"
         :doctors = "{{ $doctors }}"
     ></edit-patient-history>
 @endsection
