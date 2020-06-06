@@ -159,7 +159,8 @@ class PatientHistoryController extends Controller
             $service->diagnostic_id = $data['diagnostic'];
             $service->creator_user = Auth::user()->id;
             if(!Auth::user()->isDoctor()) {
-                $service->doctor_id = $serviceArray['assistant_id'];
+                $service->doctor_id = $serviceArray['doctor_id'];
+                $service->assistant_id = $serviceArray['assistant_id'];
             }
 
             if ($service->product->required_lab) {
