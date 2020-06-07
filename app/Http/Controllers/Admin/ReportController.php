@@ -344,18 +344,23 @@ class ReportController extends Controller
                 ->where('expenses.date', '<=', $end)
                 ->get();
 
+            //gastos
             foreach ($expenses as $expense) {
 
-                $response[$patient->id]['data'][$history->id]['services'][] = [
-                    'date' => $expense->date->format('Y-m-d H:i:s'),
-                    'classification' => trans('message.report.classification.expense'),
-                    'description' => $expense->description,
-                    'amount' => $expense->amount
-                ];
+                if($history->price > 0) {
+                    $response[$patient->id]['data'][$history->id]['services'][] = [
+                        'date' => $expense->date->format('Y-m-d H:i:s'),
+                        'classification' => trans('message.report.classification.expense'),
+                        'description' => $expense->description,
+                        'amount' => $expense->amount
+                    ];
+                }
+                
             }
 
             $payments = $history->payments()->where('payments.date', '<=', $end)->get();
-
+            
+            //pagos 
             foreach ($payments as $payment) {
 
                 if ($paymentType > 0 && $payment->type !== $paymentType) {

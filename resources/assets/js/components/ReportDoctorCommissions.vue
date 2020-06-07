@@ -557,7 +557,7 @@
                 let total = 0;
 
                 services.forEach((service) => {
-                    if (service.classification === 'Descuento') {
+                    if (service.classification === 'Descuento' && service.amount != 0) {
                         total += service.amount;
                     }
                 });
@@ -569,7 +569,7 @@
                 let total = 0;
 
                 services.forEach((service) => {
-                    if (service.classification === 'Pago') {
+                    if (service.classification === 'Pago' && service.amount != 0) {
                         total += service.amount;
                     }
                 });
@@ -581,19 +581,7 @@
                 let total = 0;
 
                 services.forEach((service) => {
-                    if (service.classification === 'Gasto') {
-                        total += service.amount;
-                    }
-                });
-
-                return total;
-            },
-            
-            calculateServices: function (services) {
-                let total = 0;
-
-                services.forEach((service) => {
-                    if (service.classification === 'Servicio') {
+                    if (service.classification === 'Gasto' && service.amount != 0) {
                         total += service.amount;
                     }
                 });
@@ -602,11 +590,11 @@
             },
 
             totalCommission: function (data) {
+                
                 let total = 0;
                 let expenses;
                 let commission;
                 let services
-                let amount = 0
                 //let discount;
                 let payments;
 
@@ -617,19 +605,10 @@
                     expenses = this.calculateExpenses(item.services);
                     //discount = this.calculateDiscount(item.services);
                     payments = this.calculatePayments(item.services);
-                    services = this.calculateServices(item.services);
 
-                    if ( (payments - expenses) <= 0) {
-                        amount = services
-                    } else {
-                        amount = (payments - expenses)
-                    }
-
-                    commission = amount * (item.commission / 100);
-                    console.log(commission)
+                    commission = (payments - expenses) * (item.commission / 100);
                     total += commission;
                 });
-                    console.log(total)
                 return total > 0 ? total : 0;
             },
 
