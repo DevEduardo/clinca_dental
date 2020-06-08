@@ -562,7 +562,7 @@
                 let total = 0;
                 
                 Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item.data, 1);
+                    total += this.calculatePaymentsForType(item, 1);
                 });
 
                 return total;
@@ -572,7 +572,7 @@
                 let total = 0;
                 
                 Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item.data, 2);
+                    total += this.calculatePaymentsForType(item, 2);
                 });
 
                 return total;
@@ -582,7 +582,7 @@
                 let total = 0;
                 
                 Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item.data, 3);
+                    total += this.calculatePaymentsForType(item, 3);
                 });
 
                 return total;
@@ -623,13 +623,13 @@
                 return total;
             },
 
-            calculatePaymentsForType: function (services, paymentType) {
+            calculatePaymentsForType: function (items, paymentType) {
                 let total = 0;
- 
-                Object.values(services).forEach((item) => {
+                console.log(items)
+                Object.values(items.data).forEach((item) => {
                     item.services.forEach((service) => {
                         if (service.classification === 'Pago' && service.amount != 0 && service.paymentType == paymentType) {
-                            total += service.amount;
+                            total += service.amount * (item.commission / 100);
                         }
                     });
                 });
