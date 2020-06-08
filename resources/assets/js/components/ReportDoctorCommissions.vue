@@ -130,12 +130,28 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Tarjeta de Credito</label>
+                                        <p> $ {{ totalPaymentsForCreditCart() }} </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Efectivo </label>
+                                        <p> $ {{ totalPaymentsForCash() }} </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Cheque</label>
+                                        <p> $ {{ totalPaymentsForCheck() }} </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Total en comisiones</label>
-                                        <p>
-                                            $ {{ totalAllCommission() }}
-                                        </p>
+                                        <p> $ {{ totalAllCommission() }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -542,6 +558,36 @@
                 return total;
             },
 
+            totalPaymentsForCreditCart: function () {
+                let total = 0;
+                
+                Object.values(this.data.report).forEach((item) => {
+                    total += this.calculatePaymentsForType(item.data, 1);
+                });
+
+                return total;
+            },
+
+            totalPaymentsForCash: function () {
+                let total = 0;
+                
+                Object.values(this.data.report).forEach((item) => {
+                    total += this.calculatePaymentsForType(item.data, 2);
+                });
+
+                return total;
+            },
+
+            totalPaymentsForCheck: function () {
+                let total = 0;
+                
+                Object.values(this.data.report).forEach((item) => {
+                    total += this.calculatePaymentsForType(item.data, 3);
+                });
+
+                return total;
+            },
+
             totalDiscounts: function (data) {
                 let total = 0;
                 data =  Object.values(data);
@@ -575,6 +621,20 @@
                 });
 
                 return total;
+            },
+
+            calculatePaymentsForType: function (services, paymentType) {
+                let total = 0;
+ 
+                Object.values(services).forEach((item) => {
+                    item.services.forEach((service) => {
+                        if (service.classification === 'Pago' && service.amount != 0 && service.paymentType == paymentType) {
+                            total += service.amount;
+                        }
+                    });
+                });
+
+                return total > 0 ? total : 0;
             },
 
             calculateExpenses: function (services) {
