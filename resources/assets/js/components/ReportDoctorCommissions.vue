@@ -133,19 +133,19 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Tarjeta de Credito</label>
-                                        <p> $ {{ totalPaymentsForCreditCart() }} </p>
+                                        <p> $ {{ calculatePaymentsForType(1) }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Efectivo </label>
-                                        <p> $ {{ totalPaymentsForCash() }} </p>
+                                        <p> $ {{ calculatePaymentsForType(2) }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Cheque</label>
-                                        <p> $ {{ totalPaymentsForCheck() }} </p>
+                                        <p> $ {{ calculatePaymentsForType(3) }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -558,36 +558,6 @@
                 return total;
             },
 
-            totalPaymentsForCreditCart: function () {
-                let total = 0;
-                
-                Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item, 1);
-                });
-
-                return total;
-            },
-
-            totalPaymentsForCash: function () {
-                let total = 0;
-                
-                Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item, 2);
-                });
-
-                return total;
-            },
-
-            totalPaymentsForCheck: function () {
-                let total = 0;
-                
-                Object.values(this.data.report).forEach((item) => {
-                    total += this.calculatePaymentsForType(item, 3);
-                });
-
-                return total;
-            },
-
             totalDiscounts: function (data) {
                 let total = 0;
                 data =  Object.values(data);
@@ -623,17 +593,40 @@
                 return total;
             },
 
-            calculatePaymentsForType: function (items, paymentType) {
-                let total = 0;
-                console.log(items)
-                Object.values(items.data).forEach((item) => {
-                    item.services.forEach((service) => {
-                        if (service.classification === 'Pago' && service.amount != 0 && service.paymentType == paymentType) {
-                            total += service.amount * (item.commission / 100);
-                        }
+            calculatePaymentsForType: function (paymentType) {
+                let total = 0
+                let totalPayment = 0
+                let totalExpense = 0
+                let commission = 0
+                let typePaymentExist = []
+                let countPayment = []
+
+                Object.values(this.data.report).forEach((patient) => {
+                    Object.values(patient.data).forEach((item) => {
+                        item.services.forEach(service => {
+                            if (service.classification === 'Pago' && service.amount != 0 ) {
+                                typePaymentExist.push(service.paymentType)
+                            }
+                        })
                     });
                 });
 
+                Object.values(this.data.report).forEach((patient) => {
+                    Object.values(patient.data).forEach((item) => {
+                        commission = item.commission
+                        item.services.forEach(service => {
+                            if (service.classification === 'Pago' && service.amount != 0 && service.paymentType == paymentType) {
+                                totalPayment += service.amount
+                            }
+                            if (service.classification === 'Gasto' && service.amount != 0) {
+                                totalExpense += service.amount
+                            }
+                        })
+                    })
+                })
+
+                countPayment = [...new Set(typePaymentExist)]
+                total = (totalPayment - (totalExpense / countPayment.length).toFixed(1)) * (commission / 100)
                 return total > 0 ? total : 0;
             },
 
@@ -741,6 +734,46 @@
                 }
 
                 this.pagination.current = this.pagination.build[0];
+            },
+
+            formatoMoneda: function (number) {
+                var number1 = number.toString(), result = '', estado = true;
+                if (parseInt(number1) < 0) {
+                    estado = false;
+                    number1 = parseInt(number1) * -1;
+                    number1 = number1.toString();
+                }
+                if (number1.indexOf('.') == -1) {
+                    while (number1.length > 3) {
+                        result = '.' + '' + number1.substr(number1.length - 3) + '' + result;
+                        number1 = number1.substring(0, number1.length - 3);
+                    }
+                    result = number1 + result;
+                    if (estado == false) {
+                        result = '-' + result;
+                    }
+                }
+                else {
+                    var pos = number1.indexOf('.');
+                    var numberInt = number1.substring(0, pos);
+                    var numberDec = number1.substring(pos, number1.length);
+                    
+                    if(numberDec.charAt(0) == '.'){
+                    var newnumber = number1.substring(pos+1, number1.length);
+                    newnumber = ','+newnumber;
+                    }
+                    
+                    while (numberInt.length > 3) {
+                        result = '.' + '' + numberInt.substr(numberInt.length - 3) + '' + result;
+                        numberInt = numberInt.substring(0, numberInt.length - 3);
+                    }
+                    //result = numberInt + result + numberDec;
+                    result = numberInt + result + newnumber;
+                    if (estado == false) {
+                        result = '-' + result;
+                    }
+                }
+                return result;
             }
 
         }
