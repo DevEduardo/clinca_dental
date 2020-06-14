@@ -402,11 +402,13 @@ class ReportController extends Controller
         );*/
         $object = (object)$response;
         //dd($object);
-
+        
         foreach($object as $data) {
-            $gastos = 0;
+            
             foreach ($data['data'] as $data2) {
+                $gastos = 0;
                 foreach ($data2['services'] as $data3) {
+                    
 
                     if ($data3['classification'] == 'Gasto') {
                         $gastos = $data3['amount'];
@@ -450,9 +452,9 @@ class ReportController extends Controller
         return new JsonResponse([
             'success' => true,
             'response' => $response,
-            'paymentForCreditCard' => abs(number_format($totalForCreditCard, 2) ),
-            'paymentForCash' => abs(number_format($totalForCash , 2) ),
-            'paymentForCheck' => abs(number_format($totalForCheck , 2) )
+            'paymentForCreditCard' => abs($totalForCreditCard ),
+            'paymentForCash' => abs($totalForCash  ),
+            'paymentForCheck' => abs($totalForCheck  )
         ]);
     }
 
