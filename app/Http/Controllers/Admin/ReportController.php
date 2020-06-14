@@ -270,6 +270,15 @@ class ReportController extends Controller
         $end->setTime(23, 59, 59);
         $response = [];
         $paymentType = (int) $request->payment_type;
+        $paymentForCreditCard = 0;
+        $paymentForCash = 0;
+        $paymentForCheck = 0;
+        $paymentCount = [];
+        $totalExpenses = 0;
+        $totalPayments = 0;
+        $totalForCreditCard = 0;
+        $totalForCash = 0;
+        $totalForCheck = 0;
 
         // Obtengo el ID de todos los servicios registrados o con un pago
         // registrado en el rango de fechas
@@ -361,6 +370,7 @@ class ReportController extends Controller
             $payments = $history->payments()->where('payments.date', '<=', $end)->get();
             
             //pagos 
+            
             foreach ($payments as $payment) {
 
                 if ($paymentType > 0 && $payment->type !== $paymentType) {
@@ -369,7 +379,7 @@ class ReportController extends Controller
                 }
 
                 $type = $payment->isDiscount() ? 'discount' : 'payment';
-
+                
                 $response[$patient->id]['data'][$history->id]['services'][] = [
                     'date' => $payment->date->format('Y-m-d H:i:s'),
                     'classification' => trans('message.report.classification.' . $type),
@@ -379,10 +389,70 @@ class ReportController extends Controller
                 ];
             }
         }
-        
+/*
+        dd( [
+            'commission' => $commission,
+            'total expense' => $totalExpenses,
+            'totalForCreditCard' => $totalForCreditCard,
+            'totalForCash' => $totalForCash,
+            'totalForCheck' => $totalForCheck,
+            'comision total' => $commission / 100,
+            'total' => ($totalPayments - $totalExpenses) * ($commission / 100)
+            ]
+        );*/
+        $object = (object)$response;
+        //dd($object);
+
+        foreach($object as $data) {
+            $gastos = 0;
+            foreach ($data['data'] as $data2) {
+                foreach ($data2['services'] as $data3) {
+
+                    if ($data3['classification'] == 'Gasto') {
+                        $gastos = $data3['amount'];
+                    }
+
+                    if ($data3['classification'] == 'Pago' && $data3['paymentType'] == 1) {
+                        if ($gastos) {
+                            $totalForCreditCard += ($data3['amount'] - $gastos) * ( $data2['commission'] / 100);
+                        } else {
+                            $totalForCreditCard += $data3['amount'] * ( $data2['commission'] / 100);
+                        }
+                        
+                    }
+                    if ($data3['classification'] == 'Pago' && $data3['paymentType'] == 2) {
+                        if ($gastos) {
+                            $totalForCash += ($data3['amount'] - $gastos) * ( $data2['commission'] / 100);
+                        } else {
+                            $totalForCash += $data3['amount'] * ( $data2['commission'] / 100);
+                        }
+                        
+                    }
+                    if ($data3['classification'] == 'Pago' && $data3['paymentType'] == 3) {
+                        if ($gastos) {
+                            $totalForCheck += ($data3['amount'] - $gastos) * ( $data2['commission'] / 100);
+                        } else {
+                            $totalForCheck += $data3['amount'] * ( $data2['commission'] / 100);
+                        }
+                        
+                    }
+                }   
+            }
+        }/*
+        dd( [
+            'totalForCreditCard' => $totalForCreditCard,
+            'totalForCash' => $totalForCash,
+            'totalForCheck' => $totalForCheck
+            ]
+        );*/
+
+    
         return new JsonResponse([
             'success' => true,
-            'response' => $response
+            'response' => $response,
+            'paymentForCreditCard' => abs(number_format($totalForCreditCard, 2) ),
+            'paymentForCash' => abs(number_format($totalForCash , 2) ),
+            'paymentForCheck' => abs(number_format($totalForCheck , 2) )
         ]);
     }
 

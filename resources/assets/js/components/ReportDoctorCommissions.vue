@@ -133,19 +133,19 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Tarjeta de Credito</label>
-                                        <p> $ {{ calculatePaymentsForType(1) }} </p>
+                                        <p> $ {{ data.paymentForCreditCard }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Efectivo </label>
-                                        <p> $ {{ calculatePaymentsForType(2) }} </p>
+                                        <p> $ {{ data.paymentForCash }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Cheque</label>
-                                        <p> $ {{ calculatePaymentsForType(3) }} </p>
+                                        <p> $ {{ data.paymentForCheck }} </p>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -419,31 +419,34 @@
             Datepicker
         },
         data: function () {
-          return {
-              loading: false,
-              doctor: null,
-              initStart: new Date(),
-              initEnd: new Date(),
-              balanceZero: false,
-              data: {
-                  start: null,
-                  end: null,
-                  payment_type: 0,
-                  report: []
-              },
-              modal: {
-                  data: [],
-                  loading: false,
-                  search: ''
-              },
-              commission: null,
+            return {
+                loading: false,
+                doctor: null,
+                initStart: new Date(),
+                initEnd: new Date(),
+                balanceZero: false,
+                data: {
+                    start: null,
+                    end: null,
+                    payment_type: 0,
+                    report: []
+                },
+                modal: {
+                    data: [],
+                    loading: false,
+                    search: ''
+                },
+                commission: null,
+                paymentForCreditCard: 0,
+                paymentForCash: 0,
+                paymentForCheck: 0,
 
-              pagination: {
-                  perPage: 999999,
-                  build: [],
-                  current: null
-              }
-          }
+                pagination: {
+                    perPage: 999999,
+                    build: [],
+                    current: null
+                }
+            }
         },
         mounted: function () {
             const date = new Date();
@@ -482,7 +485,13 @@
 
             search: function () {
                 this.loading = true;
-
+                console.log(
+                    '/admin/report/doctorCommissionsData?doctor=' + this.doctor.public_id +
+                        '&start=' + this.data.start +
+                        '&end=' + this.data.end +
+                        '&balance=' + this.balanceZero +
+                        '&payment_type=' + this.data.payment_type
+                )
                 axios.get(
                         '/admin/report/doctorCommissionsData?doctor=' + this.doctor.public_id +
                         '&start=' + this.data.start +
@@ -491,10 +500,13 @@
                         '&payment_type=' + this.data.payment_type
                 )
                     .then((res) => {
-
+                        console.log(res)
                         this.loading = false;
 
                         if (res.data.success) {
+                            this.data.paymentForCreditCard = res.data.paymentForCreditCard
+                            this.data.paymentForCash = res.data.paymentForCash
+                            this.data.paymentForCheck = res.data.paymentForCheck
                             this.data.report = res.data.response;
                             this.commission = this.totalAllCommission();
                         }
@@ -593,43 +605,6 @@
                 return total;
             },
 
-            calculatePaymentsForType: function (paymentType) {
-                let total = 0
-                let totalPayment = 0
-                let totalExpense = 0
-                let commission = 0
-                let typePaymentExist = []
-                let countPayment = []
-
-                Object.values(this.data.report).forEach((patient) => {
-                    Object.values(patient.data).forEach((item) => {
-                        item.services.forEach(service => {
-                            if (service.classification === 'Pago' && service.amount != 0 ) {
-                                typePaymentExist.push(service.paymentType)
-                            }
-                        })
-                    });
-                });
-
-                Object.values(this.data.report).forEach((patient) => {
-                    Object.values(patient.data).forEach((item) => {
-                        commission = item.commission
-                        item.services.forEach(service => {
-                            if (service.classification === 'Pago' && service.amount != 0 && service.paymentType == paymentType) {
-                                totalPayment += service.amount
-                            }
-                            if (service.classification === 'Gasto' && service.amount != 0) {
-                                totalExpense += service.amount
-                            }
-                        })
-                    })
-                })
-
-                countPayment = [...new Set(typePaymentExist)]
-                total = (totalPayment - (totalExpense / countPayment.length).toFixed(1)) * (commission / 100)
-                return total > 0 ? total : 0;
-            },
-
             calculateExpenses: function (services) {
                 let total = 0;
 
@@ -647,6 +622,7 @@
                 let total = 0;
                 let expenses;
                 let commission;
+                let commission2;
                 let services
                 //let discount;
                 let payments;
@@ -654,7 +630,7 @@
                 data =  Object.values(data);
 
                 data.forEach((item) => {
-
+                    commission2 = `${item.commission} / ${item.commission / 100}`
                     expenses = this.calculateExpenses(item.services);
                     //discount = this.calculateDiscount(item.services);
                     payments = this.calculatePayments(item.services);
@@ -662,6 +638,7 @@
                     commission = (payments - expenses) * (item.commission / 100);
                     total += commission;
                 });
+                console.log(total, commission, expenses, payments)
                 return total > 0 ? total : 0;
             },
 
